@@ -1,0 +1,10 @@
+/* Style cho container chứa các ngôi sao */
+.starsContainer {
+  display: flex;
+  color: #facc15; /* Màu vàng của sao */
+}
+
+/* Style cho từng ngôi sao */
+.starItem {
+  font-size: 20px;
+}

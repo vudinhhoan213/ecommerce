@@ -1,8 +1,15 @@
-import { render, screen } from '@testing-library/react';
-import App from './App';
+import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
+import App from "./App";
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+test("renders shop page", async () => {
+  render(
+    <MemoryRouter initialEntries={["/shop"]}>
+      <App />
+    </MemoryRouter>
+  );
+
+  expect(screen.getByRole("heading", { name: /mobile shopping/i })).toBeInTheDocument();
+  expect(await screen.findByRole("heading", { name: /shop/i })).toBeInTheDocument();
+  expect(await screen.findByText(/products/i)).toBeInTheDocument();
 });

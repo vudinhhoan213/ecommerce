@@ -1,0 +1,79 @@
+.myProfileContainer {
+  max-width: 800px;
+  padding: 0 20px;
+  font-family: sans-serif;
+  color: #000000;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.headerInfo {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.metaText h1 {
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+}
+
+.metaText p {
+  font-size: 18px;
+  color: #333333;
+  margin: 0;
+}
+
+.infoForm {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.formGroup {
+  display: flex;
+  align-items: flex-end; /* Căn chân chữ của nhãn và giá trị đều nhau */
+}
+
+.label {
+  width: 180px;
+  font-size: 15px;
+  color: #000000;
+  padding-bottom: 6px; /* Đồng bộ khoảng cách gạch chân */
+}
+
+/* Điểm mấu chốt: Dùng inline-flex để khung chỉ rộng bằng nội dung bên trong */
+.valueWrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #000000;
+  padding-bottom: 6px;
+}
+
+.valueText {
+  font-size: 15px;
+  color: #000000;
+  white-space: nowrap; /* Giữ chữ trên một hàng không bị tự động xuống dòng */
+}
+
+.icon {
+  font-size: 14px;
+  color: #000000;
+  display: flex;
+  align-items: center;
+}

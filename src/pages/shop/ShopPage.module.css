@@ -1,0 +1,114 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #fff;
+}
+
+.header {
+  flex-shrink: 0;
+  border-bottom: 1px solid #eee;
+  background-color: #fff;
+  z-index: 100;
+}
+
+.shopHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.searchFilter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.searchWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 220px;
+}
+
+.searchWrapper input {
+  width: 100%;
+  padding: 8px 35px 8px 10px;
+  border: 1px solid #100000;
+  font-size: 14px;
+  outline: none;
+}
+
+.searchBtn {
+  position: absolute;
+  right: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.searchBtn img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.filterBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.filterBtn img {
+  width: 24px;
+  height: 24px;
+}
+
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+}
+
+.productCard {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  text-decoration: none;
+  color: #333;
+}
+
+.productCard img {
+  width: 120px;
+  height: auto;
+}
+
+.productInfo h3 {
+  font-size: 14px;
+  margin: 0 0 8px 0;
+}
+
+.price {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.noResult {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  font-size: 16px;
+  color: #666;
+  text-align: center;
+  margin: 0;
+}

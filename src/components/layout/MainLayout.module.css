@@ -1,0 +1,175 @@
+.layoutContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #bce3f7;
+  padding: 0 20px;
+  height: 60px;
+  flex-shrink: 0;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.headerLeft img {
+  height: 35px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.subContainer {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 200px;
+  border-right: 1px solid #ccc;
+  transition: width 0.2s ease;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow-y: auto;
+}
+
+.sidebar.collapsed {
+  width: 60px;
+}
+
+.sidebarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  border-bottom: 1px solid #eee;
+  height: 40px;
+}
+
+.sidebar.collapsed .sidebarHeader {
+  justify-content: center;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menuLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 15px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.sidebar.collapsed .menuLink {
+  justify-content: center;
+  padding: 12px 0;
+}
+
+.menuIcon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.mainContent {
+  flex: 1;
+  overflow-y: auto;
+  background-color: #ffffff;
+  padding-bottom: 20px;
+}
+
+/* Footer Styles */
+.footer {
+  background-color: #1f1f1f;
+  color: #ffffff;
+  padding: 10px;
+  flex-shrink: 0;
+  border-top: 1px solid #333;
+}
+
+.footerContent {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  margin-bottom: 10px;
+}
+
+.footerSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footerSection h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #00bee6;
+  text-transform: uppercase;
+}
+
+.footerSection p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #cccccc;
+}
+
+.footerSection p:hover {
+  color: #00bee6;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.footerBottom {
+  text-align: center;
+  border-top: 1px solid #333;
+  padding-top: 15px;
+  font-size: 12px;
+  color: #888;
+}
+
+.footerBottom p {
+  margin: 0;
+}
+
+.hamburgerBtn {
+  background: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.hamburgerBtn span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background-color: #333;
+}

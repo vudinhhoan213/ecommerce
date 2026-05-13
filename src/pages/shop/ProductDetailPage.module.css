@@ -1,0 +1,161 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #fff;
+}
+
+.header {
+  flex-shrink: 0;
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+  background-color: #fff;
+  z-index: 100;
+}
+
+.breadcrumb {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.breadcrumbContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.breadcrumbText h2 {
+  font-size: 18px;
+  color: #555;
+  margin: 0;
+  font-weight: 600;
+}
+
+.cartIconScaleWrapper {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.productSection {
+  display: flex;
+  gap: 40px;
+  margin-top: 20px;
+}
+
+.imageGallery {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.mainImage {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.colorList {
+  display: flex;
+  gap: 10px;
+}
+
+.colorList button {
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.colorOptionActive {
+  border-color: #00bee6 !important;
+  color: #00bee6;
+  font-weight: bold;
+  background-color: #f0fafd !important;
+}
+
+.infoSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.infoSection h2 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.infoSection p {
+  color: #666;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.price {
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+}
+
+.actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.buyNowBtn,
+.addToCartBtn {
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  flex: 1;
+  transition: background-color 0.2s;
+}
+
+.buyNowBtn {
+  background-color: #00bee6;
+  color: #fff;
+}
+
+.buyNowBtn:hover {
+  background-color: #009cb3;
+}
+
+.addToCartBtn {
+  background-color: #f0fafd;
+  color: #00bee6;
+  border: 1px solid #00bee6;
+}
+
+.addToCartBtn:hover {
+  background-color: #e0f5fa;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  font-size: 16px;
+  color: #666;
+}
