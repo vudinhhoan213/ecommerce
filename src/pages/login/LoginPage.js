@@ -2,17 +2,16 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import styles from "./LoginPage.module.css";
+import { Button, Form, Input, message, Alert } from "antd";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { loginRefresh } = useAuth(); // Gọi hook chuẩn useAuth vừa tạo
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const { loginRefresh } = useAuth();
+
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleLoginSubmit = async (e) => {
-    e.preventDefault();
+  const handleLoginSubmit = async (values) => {
     setLoading(true);
     setErrorMessage("");
 
@@ -22,9 +21,9 @@ const LoginPage = () => {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({
-          username: username.trim(),
-          password: password.trim(),
-          expiresInMins: 30, // Token sống trong 30 phút
+          username: values.username.trim(),
+          password: values.password.trim(),
+          expiresInMins: 30,
         }),
       });
 
@@ -32,21 +31,19 @@ const LoginPage = () => {
 
       if (response.ok) {
         const tokenValue = data.accessToken || data.token;
-
-        // 1. Lưu token thật vào localStorage ngay lập tức
         localStorage.setItem("accessToken", tokenValue);
-
-        // 2. Báo cho Context biết để đi lấy profile user về
         loginRefresh(tokenValue);
 
-        // 3. Chuyển hướng sang trang mua sắm
+        message.success("Login success!");
+
         navigate("/shop");
       } else {
-        // Hiển thị thông báo lỗi từ API của DummyJSON trả về
-        setErrorMessage(data.message || "Tài khoản hoặc mật khẩu không đúng!");
+        const errorText = data.message || "Tài khoản hoặc mật khẩu không đúng!";
+        setErrorMessage(errorText);
       }
     } catch (error) {
-      setErrorMessage("Lỗi kết nối mạng, vui lòng thử lại sau.");
+      const networkError = "Lỗi kết nối mạng, vui lòng thử lại sau.";
+      setErrorMessage(networkError);
     } finally {
       setLoading(false);
     }
@@ -54,41 +51,41 @@ const LoginPage = () => {
 
   return (
     <div className={styles.loginContainer}>
-      <form onSubmit={handleLoginSubmit} className={styles.loginForm}>
+      <div className={styles.loginForm}>
         <h2>ĐĂNG NHẬP HỆ THỐNG</h2>
 
-        {errorMessage && (
-          <div className={styles.errorAlert}>{errorMessage}</div>
-        )}
+        {errorMessage && <Alert message={errorMessage} type="error" showIcon />}
 
-        <div className={styles.inputGroup}>
-          <label>Tài khoản</label>
-          <input
-            type="text"
-            placeholder="Nhập username (Ví dụ: emilys)"
-            autoComplete="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </div>
+        <Form layout="vertical" onFinish={handleLoginSubmit}>
+          <Form.Item
+            label="User Name"
+            name="username"
+            rules={[{ required: true, message: "Vui lòng nhập tài khoản!" }]}
+          >
+            <Input placeholder="Nhập username" />
+          </Form.Item>
 
-        <div className={styles.inputGroup}>
-          <label>Mật khẩu</label>
-          <input
-            type="password"
-            placeholder="Nhập password (Ví dụ: emilyspass)"
-            autoComplete="current-password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
+          >
+            <Input.Password placeholder="Nhập password" />
+          </Form.Item>
 
-        <button type="submit" className={styles.loginBtn} disabled={loading}>
-          {loading ? "Đang xác thực..." : "Đăng nhập"}
-        </button>
-      </form>
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className={styles.loginBtn}
+              loading={loading}
+              block
+            >
+              Đăng nhập
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
     </div>
   );
 };

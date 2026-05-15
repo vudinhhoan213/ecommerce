@@ -1,9 +1,30 @@
-import React, { createContext, useContext, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useMemo,
+  useEffect,
+} from "react";
 
 const CartContext = createContext();
 
+const CART_STORAGE_KEY = "ecommerce_cart";
+
+const loadCartFromStorage = () => {
+  try {
+    const stored = localStorage.getItem(CART_STORAGE_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+};
+
 export const CartProvider = ({ children }) => {
-  const [cartList, setCartList] = useState([]);
+  const [cartList, setCartList] = useState(loadCartFromStorage);
+
+  useEffect(() => {
+    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartList));
+  }, [cartList]);
 
   const addToCart = (product, color) => {
     setCartList((prevItems) => {
@@ -47,14 +68,20 @@ export const CartProvider = ({ children }) => {
 
   const clearCart = () => setCartList([]);
 
-  const totalItems = cartList.reduce((sum, item) => sum + item.quantity, 0);
-
-  const subTotal = cartList.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0,
+  const totalItems = useMemo(
+    () => cartList.reduce((sum, item) => sum + item.quantity, 0),
+    [cartList],
   );
-  const tax = Math.round(subTotal * 0.1); // Thuế 10%
-  const total = subTotal + tax;
+
+  const { subTotal, tax, total } = useMemo(() => {
+    const subTotal = cartList.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0,
+    );
+    const tax = Math.round(subTotal * 0.1);
+    const total = subTotal + tax;
+    return { subTotal, tax, total };
+  }, [cartList]);
 
   return (
     <CartContext.Provider
@@ -75,4 +102,10 @@ export const CartProvider = ({ children }) => {
   );
 };
 
-export const useCart = () => useContext(CartContext);
+export const useCart = () => {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error("useCart must be used within a CartProvider");
+  }
+  return context;
+};

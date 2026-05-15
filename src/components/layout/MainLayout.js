@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import { Logo, Cart, Human } from "../../assets";
 import styles from "./MainLayout.module.css";
 
@@ -11,76 +12,25 @@ const MENU_ITEMS = [
 
 const MainLayout = ({ children }) => {
   const navigate = useNavigate();
+  const { userData, loading, logout } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(false);
-
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let isMounted = true; // Cờ kiểm soát tránh bộ nhớ đệm re-render vô hạn khi crash API
-    const token = localStorage.getItem("accessToken");
-
-    if (!token) {
-      setLoading(false);
-      navigate("/");
-      return;
-    }
-
-    fetch("https://dummyjson.com/auth/me", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Token đã hết hạn hoặc không hợp lệ");
-        }
-        return res.json();
-      })
-      .then((data) => {
-        // Chỉ cập nhật state nếu component vẫn đang được hiển thị thực tế
-        if (isMounted) {
-          setUser(data);
-          setLoading(false);
-        }
-      })
-      .catch((err) => {
-        console.error("Xác thực thất bại:", err.message);
-
-        if (isMounted) {
-          localStorage.removeItem("accessToken"); // Dọn dẹp token lỗi
-          setLoading(false);
-          navigate("/"); // Đẩy về trang đăng nhập
-        }
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [navigate]);
-
-  // Hàm xử lý Đăng xuất
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    navigate("/");
-  };
 
   if (loading) {
     return (
-      <div
-        style={{
-          padding: "100px 20px",
-          textAlign: "center",
-          fontWeight: "bold",
-          color: "#00bee6",
-          fontSize: "16px",
-        }}
-      >
+      <div className={styles.loadingScreen}>
         Đang kiểm tra quyền truy cập hệ thống...
       </div>
     );
   }
+
+  if (!userData) {
+    return null;
+  }
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
     <div className={styles.layoutContainer}>
@@ -92,33 +42,21 @@ const MainLayout = ({ children }) => {
           <h1>Mobile Shopping</h1>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-          <span style={{ fontSize: "14px", color: "#333" }}>
+        <div className={styles.headerRight}>
+          <span className={styles.greeting}>
             Chào,{" "}
             <strong>
-              {user?.firstName} {user?.lastName}
+              {userData.firstName} {userData.lastName}
             </strong>
           </span>
           <Link to="/profile">
             <img
-              src={user?.image}
+              src={userData.image || userData.avatar}
               alt="User Avatar"
               className={styles.avatar}
             />
           </Link>
-          <button
-            onClick={handleLogout}
-            style={{
-              padding: "6px 12px",
-              backgroundColor: "#ff4d4f",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: "12px",
-              fontWeight: "500",
-            }}
-          >
+          <button onClick={handleLogout} className={styles.logoutBtn}>
             Đăng xuất
           </button>
         </div>

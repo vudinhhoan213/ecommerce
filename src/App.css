@@ -1,10 +1,19 @@
 :root {
+<<<<<<< ours
   --accent: #10c7e8;
   --header: #c9ecfb;
   --border: #c7c7c7;
   --ink: #0a0a0a;
   --muted: #555;
   --surface: #fff;
+=======
+  --accent: #2563eb;
+  --header: #ffffff;
+  --border: #e5e7eb;
+  --ink: #111827;
+  --muted: #6b7280;
+  --surface: #ffffff;
+>>>>>>> theirs
 }
 
 * {
@@ -14,6 +23,7 @@
 .shopping-app {
   min-height: 100vh;
   color: var(--ink);
+<<<<<<< ours
   background: #f7fbff;
   border: 2px solid #1d9df0;
   font-family: Arial, Helvetica, sans-serif;
@@ -816,3 +826,8 @@
     margin: 0 16px;
   }
 }
+=======
+  background: #f5f6f8;
+  font-family: Arial, Helvetica, sans-serif;
+}
+>>>>>>> theirs

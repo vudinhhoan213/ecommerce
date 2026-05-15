@@ -1,10 +1,16 @@
-/* Style cho container chứa các ngôi sao */
 .starsContainer {
   display: flex;
-  color: #facc15; /* Màu vàng của sao */
+  align-items: center;
+  gap: 1px;
 }
 
-/* Style cho từng ngôi sao */
 .starItem {
-  font-size: 20px;
+  font-size: 15px;
+  line-height: 1;
+  color: #f59e0b;
+  transition: transform 0.15s ease;
+}
+
+.starItem:hover {
+  transform: scale(1.2);
 }

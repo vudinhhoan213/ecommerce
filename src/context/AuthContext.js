@@ -17,8 +17,20 @@ export const AuthProvider = ({ children }) => {
         credentials: "include",
       });
 
+      if (!res.ok) {
+        throw new Error("Token không hợp lệ hoặc đã hết hạn");
+      }
+
       const data = await res.json();
-      setUserData(data);
+
+      setUserData({
+        ...data,
+        name: `${data.firstName} ${data.lastName}`,
+        avatar: data.image,
+        dob: data.birthDate || "N/A",
+        companyAddress: data.company?.address?.address || "N/A",
+        homeAddress: data.address?.address || "N/A",
+      });
     } catch (err) {
       console.error("Lỗi xác thực người dùng:", err.message);
       localStorage.removeItem("accessToken");
@@ -47,6 +59,10 @@ export const AuthProvider = ({ children }) => {
     setUserData(null);
   };
 
+  const updateUserData = (updatedFields) => {
+    setUserData((prev) => (prev ? { ...prev, ...updatedFields } : null));
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -54,6 +70,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         loginRefresh,
         logout,
+        updateUserData,
         isAuthenticated: !!userData,
       }}
     >
@@ -64,5 +81,8 @@ export const AuthProvider = ({ children }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
   return context;
 };

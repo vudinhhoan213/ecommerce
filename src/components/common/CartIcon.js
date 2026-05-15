@@ -1,5 +1,5 @@
-// src/components/common/CartIcon.jsx
 import React from "react";
+import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import { Cart } from "../../assets";
 import styles from "./CartIcon.module.css";
@@ -7,11 +7,10 @@ import styles from "./CartIcon.module.css";
 const CartIcon = () => {
   const { totalItems } = useCart();
   return (
-    <div className={styles.cartWrapper}>
+    <Link to="/cart" className={styles.cartWrapper}>
       <img src={Cart} alt="Shopping Cart" className={styles.cartIcon} />
-
       {totalItems > 0 && <span className={styles.badge}>{totalItems}</span>}
-    </div>
+    </Link>
   );
 };
 

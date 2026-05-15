@@ -1,10 +1,10 @@
 import React from "react";
-import { useUser } from "../../context/UserContext";
+import { useAuth } from "../../context/AuthContext";
 import styles from "./ProfilePage.module.css";
 import { CalendarFilled } from "@ant-design/icons";
 
 const ProfilePage = () => {
-  const { userData, loading } = useUser();
+  const { userData, loading } = useAuth();
 
   if (loading) {
     return (
@@ -25,7 +25,7 @@ const ProfilePage = () => {
       <div className={styles.title}>My Profile</div>
       <div className={styles.headerInfo}>
         <img
-          src={userData.avatar}
+          src={userData.avatar || userData.image}
           alt="User Avatar"
           className={styles.avatar}
         />
