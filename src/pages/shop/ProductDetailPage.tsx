@@ -6,18 +6,24 @@ import { message, Spin } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import RatingStars from "../../components/common/RatingStars";
 import CartIcon from "../../components/common/CartIcon";
-import { addToCart } from "../../redux/cartSlice";
-import { fetchProductById } from "../../redux/productThunk";
-import { selectCurrentProduct, selectProductLoading, selectProductError, clearCurrentProduct } from "../../redux/productSlice";
-import type { AppDispatch } from "../../redux/store";
+import { addToCart } from "../../store/cartSlice";
+import { fetchProductById } from "../../store/productThunk";
+import {
+  selectCurrentProduct,
+  selectProductLoading,
+  selectProductError,
+  clearCurrentProduct,
+} from "../../store/productSlice";
+import type { AppDispatch } from "../../store/store";
 import styles from "./ProductDetailPage.module.css";
 
 const DEFAULT_COLORS = ["Đen", "Trắng", "Xanh"];
 
 const FALLBACK_IMAGES_BY_COLOR: Record<string, string> = {
-  "Đen": "https://dummyjson.com/image/400x300/282828/ffffff?text=M%C3%A0u+%C4%90en",
-  "Trắng": "https://dummyjson.com/image/400x300/f5f5f5/333333?text=M%C3%A0u+Tr%E1%BA%AFng",
-  "Xanh": "https://dummyjson.com/image/400x300/1a73e8/ffffff?text=M%C3%A0u+Xanh",
+  Đen: "https://dummyjson.com/image/400x300/282828/ffffff?text=M%C3%A0u+%C4%90en",
+  Trắng:
+    "https://dummyjson.com/image/400x300/f5f5f5/333333?text=M%C3%A0u+Tr%E1%BA%AFng",
+  Xanh: "https://dummyjson.com/image/400x300/1a73e8/ffffff?text=M%C3%A0u+Xanh",
 };
 
 const ProductDetailPage: React.FC = () => {
@@ -61,7 +67,9 @@ const ProductDetailPage: React.FC = () => {
       } else if (FALLBACK_IMAGES_BY_COLOR[colors[i]]) {
         result.push(FALLBACK_IMAGES_BY_COLOR[colors[i]]);
       } else {
-        result.push(`https://dummyjson.com/image/400x300/cccccc/333333?text=${encodeURIComponent(colors[i])}`);
+        result.push(
+          `https://dummyjson.com/image/400x300/cccccc/333333?text=${encodeURIComponent(colors[i])}`,
+        );
       }
     }
     return result;
@@ -70,21 +78,26 @@ const ProductDetailPage: React.FC = () => {
   const images = getImages();
   const colors = product?.colors || DEFAULT_COLORS;
 
-  const handleColorSelect = useCallback((index: number) => {
-    setSelectedColorIndex(index);
-    setCurrentImageIndex(index % images.length);
-  }, [images.length]);
+  const handleColorSelect = useCallback(
+    (index: number) => {
+      setSelectedColorIndex(index);
+      setCurrentImageIndex(index % images.length);
+    },
+    [images.length],
+  );
 
   const handlePrevImage = useCallback(() => {
     if (images.length <= 1) return;
-    const newIndex = currentImageIndex === 0 ? images.length - 1 : currentImageIndex - 1;
+    const newIndex =
+      currentImageIndex === 0 ? images.length - 1 : currentImageIndex - 1;
     setCurrentImageIndex(newIndex);
     setSelectedColorIndex(newIndex % colors.length);
   }, [currentImageIndex, images.length, colors.length]);
 
   const handleNextImage = useCallback(() => {
     if (images.length <= 1) return;
-    const newIndex = currentImageIndex === images.length - 1 ? 0 : currentImageIndex + 1;
+    const newIndex =
+      currentImageIndex === images.length - 1 ? 0 : currentImageIndex + 1;
     setCurrentImageIndex(newIndex);
     setSelectedColorIndex(newIndex % colors.length);
   }, [currentImageIndex, images.length, colors.length]);
@@ -95,7 +108,12 @@ const ProductDetailPage: React.FC = () => {
     if (goToCart) {
       navigate("/cart");
     } else {
-      message.success(t("productDetail.addedToCart", { name: product.title, color: colors[selectedColorIndex] }));
+      message.success(
+        t("productDetail.addedToCart", {
+          name: product.title,
+          color: colors[selectedColorIndex],
+        }),
+      );
     }
   };
 
@@ -106,11 +124,15 @@ const ProductDetailPage: React.FC = () => {
           <div className={styles.breadcrumbContainer}>
             <div className={styles.breadcrumbText}>
               <h2>
-                <Link to="/shop" className={styles.breadcrumbLink}>{t("shop.title")}</Link>{" "}
+                <Link to="/shop" className={styles.breadcrumbLink}>
+                  {t("shop.title")}
+                </Link>{" "}
                 / {t("productDetail.breadcrumb")}
               </h2>
             </div>
-            <div className={styles.cartIconScaleWrapper}><CartIcon /></div>
+            <div className={styles.cartIconScaleWrapper}>
+              <CartIcon />
+            </div>
           </div>
         </div>
       </header>
@@ -126,17 +148,32 @@ const ProductDetailPage: React.FC = () => {
           <div className={styles.productSection}>
             <div className={styles.imageGallery}>
               <div className={styles.imageSlider}>
-                <button type="button" className={`${styles.arrowBtn} ${styles.arrowBtnLeft}`} onClick={handlePrevImage}>
+                <button
+                  type="button"
+                  className={`${styles.arrowBtn} ${styles.arrowBtnLeft}`}
+                  onClick={handlePrevImage}
+                >
                   <LeftOutlined />
                 </button>
                 <div className={styles.mainImageWrapper}>
-                  <img key={currentImageIndex} src={images[currentImageIndex]} alt={product.title} className={styles.mainImage} />
+                  <img
+                    key={currentImageIndex}
+                    src={images[currentImageIndex]}
+                    alt={product.title}
+                    className={styles.mainImage}
+                  />
                 </div>
-                <button type="button" className={`${styles.arrowBtn} ${styles.arrowBtnRight}`} onClick={handleNextImage}>
+                <button
+                  type="button"
+                  className={`${styles.arrowBtn} ${styles.arrowBtnRight}`}
+                  onClick={handleNextImage}
+                >
                   <RightOutlined />
                 </button>
                 {images.length > 1 && (
-                  <span className={styles.imageCounter}>{currentImageIndex + 1}/{images.length}</span>
+                  <span className={styles.imageCounter}>
+                    {currentImageIndex + 1}/{images.length}
+                  </span>
                 )}
               </div>
 
@@ -148,21 +185,30 @@ const ProductDetailPage: React.FC = () => {
                       src={img}
                       alt={colors[index] || `Image ${index + 1}`}
                       className={`${styles.thumbnailItem} ${index === currentImageIndex ? styles.thumbnailActive : ""}`}
-                      onClick={() => { setCurrentImageIndex(index); setSelectedColorIndex(index % colors.length); }}
+                      onClick={() => {
+                        setCurrentImageIndex(index);
+                        setSelectedColorIndex(index % colors.length);
+                      }}
                     />
                   ))}
                 </div>
               )}
 
               <div className={styles.colorSection}>
-                <span className={styles.colorLabel}>{t("productDetail.selectColor")}</span>
+                <span className={styles.colorLabel}>
+                  {t("productDetail.selectColor")}
+                </span>
                 <div className={styles.colorList}>
                   {colors.map((color, index) => (
                     <button
                       key={color}
                       type="button"
                       onClick={() => handleColorSelect(index)}
-                      className={selectedColorIndex === index ? styles.colorOptionActive : ""}
+                      className={
+                        selectedColorIndex === index
+                          ? styles.colorOptionActive
+                          : ""
+                      }
                     >
                       {color}
                     </button>
@@ -177,13 +223,22 @@ const ProductDetailPage: React.FC = () => {
               <div className={styles.price}>{formatVND(product.price)}</div>
               <RatingStars rating={product.rating} />
               <div className={styles.selectedColorText}>
-                {t("productDetail.selectedColor")}: <strong>{colors[selectedColorIndex]}</strong>
+                {t("productDetail.selectedColor")}:{" "}
+                <strong>{colors[selectedColorIndex]}</strong>
               </div>
               <div className={styles.actions}>
-                <button type="button" className={styles.buyNowBtn} onClick={() => handleAddToCart(true)}>
+                <button
+                  type="button"
+                  className={styles.buyNowBtn}
+                  onClick={() => handleAddToCart(true)}
+                >
                   {t("productDetail.buyNow")}
                 </button>
-                <button type="button" className={styles.addToCartBtn} onClick={() => handleAddToCart(false)}>
+                <button
+                  type="button"
+                  className={styles.addToCartBtn}
+                  onClick={() => handleAddToCart(false)}
+                >
                   {t("productDetail.addToCart")}
                 </button>
               </div>

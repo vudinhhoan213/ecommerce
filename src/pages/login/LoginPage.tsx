@@ -2,9 +2,9 @@ import React, { useEffect } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { loginUser } from "../../redux/authThunk";
-import { clearLoginError } from "../../redux/authSlice";
-import type { RootState, AppDispatch } from "../../redux/store";
+import { loginUser } from "../../store/authThunk";
+import { clearLoginError } from "../../store/authSlice";
+import type { RootState, AppDispatch } from "../../store/store";
 import styles from "./LoginPage.module.css";
 import { Button, Form, Input, message, Alert } from "antd";
 
@@ -13,7 +13,7 @@ const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { isAuthenticated, loading, loginLoading, loginError } = useSelector(
-    (state: RootState) => state.auth
+    (state: RootState) => state.auth,
   );
 
   useEffect(() => {
@@ -23,8 +23,13 @@ const LoginPage: React.FC = () => {
   if (loading) return null;
   if (isAuthenticated) return <Navigate to="/shop" replace />;
 
-  const handleLoginSubmit = async (values: { username: string; password: string }) => {
-    const result = await dispatch(loginUser({ username: values.username, password: values.password }));
+  const handleLoginSubmit = async (values: {
+    username: string;
+    password: string;
+  }) => {
+    const result = await dispatch(
+      loginUser({ username: values.username, password: values.password }),
+    );
     if (loginUser.fulfilled.match(result)) {
       message.success(t("auth.loginSuccess"));
       navigate("/shop");
@@ -52,7 +57,13 @@ const LoginPage: React.FC = () => {
             <Input.Password placeholder={t("auth.passwordPlaceholder")} />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" className={styles.loginBtn} loading={loginLoading} block>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className={styles.loginBtn}
+              loading={loginLoading}
+              block
+            >
               {t("auth.loginButton")}
             </Button>
           </Form.Item>

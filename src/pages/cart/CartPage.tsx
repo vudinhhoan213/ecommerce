@@ -1,7 +1,12 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { selectCartList, selectCartTotals, updateQuantity, removeFromCart } from "../../redux/cartSlice";
+import {
+  selectCartList,
+  selectCartTotals,
+  updateQuantity,
+  removeFromCart,
+} from "../../store/cartSlice";
 import styles from "./CartPage.module.css";
 import { InputNumber } from "antd";
 
@@ -28,11 +33,19 @@ const CartPage: React.FC = () => {
           <div className={styles.itemList}>
             {cartList.map((item: any, index: number) => (
               <div key={`${item.id}-${index}`} className={styles.cartItem}>
-                <img src={item.thumbnail || item.image} alt={item.title || item.name} className={styles.itemImage} />
+                <img
+                  src={item.thumbnail || item.image}
+                  alt={item.title || item.name}
+                  className={styles.itemImage}
+                />
                 <div className={styles.itemInfo}>
-                  <h4>{t("cart.phone")} {item.title || item.name}</h4>
+                  <h4>
+                    {t("cart.phone")} {item.title || item.name}
+                  </h4>
                   <p>{item.description}</p>
-                  <div className={styles.itemPrice}>{formatVND(item.price)}</div>
+                  <div className={styles.itemPrice}>
+                    {formatVND(item.price)}
+                  </div>
                 </div>
                 <div className={styles.qtyController}>
                   <InputNumber
@@ -40,13 +53,26 @@ const CartPage: React.FC = () => {
                     value={item.quantity}
                     onChange={(value) => {
                       if (value !== null && value > 0) {
-                        dispatch(updateQuantity({ productId: item.id, color: item.selectedColor, newQuantity: value }));
+                        dispatch(
+                          updateQuantity({
+                            productId: item.id,
+                            color: item.selectedColor,
+                            newQuantity: value,
+                          }),
+                        );
                       }
                     }}
                     style={{ width: "120px", margin: "0 10px" }}
                   />
                   <button
-                    onClick={() => dispatch(removeFromCart({ productId: item.id, color: item.selectedColor }))}
+                    onClick={() =>
+                      dispatch(
+                        removeFromCart({
+                          productId: item.id,
+                          color: item.selectedColor,
+                        }),
+                      )
+                    }
                     className={styles.removeBtn}
                   >
                     {t("cart.removeItem")}
@@ -56,9 +82,18 @@ const CartPage: React.FC = () => {
             ))}
           </div>
           <div className={styles.billingSection}>
-            <div className={styles.billingRow}><span>{t("cart.subTotal")}</span><span>{formatVND(subTotal)}</span></div>
-            <div className={styles.billingRow}><span>{t("cart.tax")}</span><span>{formatVND(tax)}</span></div>
-            <div className={styles.totalRow}><span>{t("cart.total")}</span><span>{formatVND(total)}</span></div>
+            <div className={styles.billingRow}>
+              <span>{t("cart.subTotal")}</span>
+              <span>{formatVND(subTotal)}</span>
+            </div>
+            <div className={styles.billingRow}>
+              <span>{t("cart.tax")}</span>
+              <span>{formatVND(tax)}</span>
+            </div>
+            <div className={styles.totalRow}>
+              <span>{t("cart.total")}</span>
+              <span>{formatVND(total)}</span>
+            </div>
           </div>
         </div>
       )}

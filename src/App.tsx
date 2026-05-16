@@ -4,8 +4,8 @@ import { useDispatch } from "react-redux";
 import { publicRoutes } from "./routes";
 import AuthMiddleware from "./middleware/AuthMiddleware";
 import ErrorBoundary from "./components/common/ErrorBoundary";
-import { fetchUserProfile } from "./redux/authThunk";
-import type { AppDispatch } from "./redux/store";
+import { fetchUserProfile } from "./store/authThunk";
+import type { AppDispatch } from "./store/store";
 
 const App: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();

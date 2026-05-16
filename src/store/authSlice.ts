@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { fetchUserProfile, loginUser } from "./authThunk";
 import type { AuthState } from "../types";
+import { PURGE } from "redux-persist";
 
 const initialState: AuthState = {
   userData: null,
@@ -15,9 +16,11 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     logout: (state) => {
+      // Xóa token khỏi localStorage (token không persist vì không nằm trong whitelist)
       localStorage.removeItem("accessToken");
       state.userData = null;
       state.isAuthenticated = false;
+      state.loading = false;
     },
     clearLoginError: (state) => {
       state.loginError = "";
@@ -25,6 +28,9 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Reset state khi purge persist
+      .addCase(PURGE, () => initialState)
+      // Fetch profile
       .addCase(fetchUserProfile.pending, (state) => {
         state.loading = true;
       })
@@ -38,6 +44,7 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.loading = false;
       })
+      // Login
       .addCase(loginUser.pending, (state) => {
         state.loginLoading = true;
         state.loginError = "";

@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { selectTotalItems } from "../../redux/cartSlice";
+import { selectTotalItems } from "../../store/cartSlice";
 import { Cart } from "../../assets";
 import styles from "./CartIcon.module.css";
 

@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Input, Space, Modal, message, Skeleton, Card } from "antd";
-import { SearchOutlined, FilterOutlined, PlusOutlined, ExclamationCircleOutlined } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  FilterOutlined,
+  PlusOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import ProductCard from "../../components/shop/ProductCard";
 import ProductModal from "../../components/shop/ProductModal";
@@ -10,15 +15,15 @@ import {
   selectProducts,
   selectProductLoading,
   selectProductError,
-} from "../../redux/productSlice";
+} from "../../store/productSlice";
 import {
   fetchProducts,
   createProduct,
   updateProduct,
   deleteProduct,
-} from "../../redux/productThunk";
+} from "../../store/productThunk";
 import type { Product } from "../../types";
-import type { AppDispatch } from "../../redux/store";
+import type { AppDispatch } from "../../store/store";
 import styles from "./ShopPage.module.css";
 
 const PRODUCTS_PER_PAGE = 20;
@@ -47,13 +52,18 @@ const ShopPage: React.FC = () => {
     new Intl.NumberFormat("vi-VN").format(num) + " VND";
 
   const filteredProducts = products.filter((product) =>
-    product.title.toLowerCase().includes(searchTerm.toLowerCase())
+    product.title.toLowerCase().includes(searchTerm.toLowerCase()),
   );
   const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
   const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;
-  const paginatedProducts = filteredProducts.slice(startIndex, startIndex + PRODUCTS_PER_PAGE);
+  const paginatedProducts = filteredProducts.slice(
+    startIndex,
+    startIndex + PRODUCTS_PER_PAGE,
+  );
 
-  useEffect(() => { setCurrentPage(1); }, [searchTerm]);
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
 
   const handleOpenModal = (product: Product | null = null) => {
     setEditingProduct(product);
@@ -69,7 +79,9 @@ const ShopPage: React.FC = () => {
     setIsLoading(true);
     try {
       if (editingProduct) {
-        await dispatch(updateProduct({ id: editingProduct.id, data: formData })).unwrap();
+        await dispatch(
+          updateProduct({ id: editingProduct.id, data: formData }),
+        ).unwrap();
         message.success(t("shop.updateSuccess"));
       } else {
         await dispatch(createProduct(formData)).unwrap();
@@ -138,7 +150,12 @@ const ShopPage: React.FC = () => {
                 allowClear
               />
               <Button icon={<FilterOutlined />} className={styles.filterBtn} />
-              <Button type="primary" icon={<PlusOutlined />} onClick={() => handleOpenModal()} className={styles.addBtn}>
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => handleOpenModal()}
+                className={styles.addBtn}
+              >
                 {t("shop.addProduct")}
               </Button>
             </Space>
@@ -171,12 +188,22 @@ const ShopPage: React.FC = () => {
                 />
               ))}
             </div>
-            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
           </>
         )}
       </div>
 
-      <ProductModal open={showModal} editingProduct={editingProduct} onSave={handleSaveProduct} onCancel={handleCloseModal} isLoading={isLoading} />
+      <ProductModal
+        open={showModal}
+        editingProduct={editingProduct}
+        onSave={handleSaveProduct}
+        onCancel={handleCloseModal}
+        isLoading={isLoading}
+      />
     </div>
   );
 };
