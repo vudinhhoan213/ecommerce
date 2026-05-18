@@ -1,4 +1,4 @@
-const BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://dummyjson.com";
+const BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 interface RequestOptions {
   method?: "GET" | "POST" | "PUT" | "DELETE";
@@ -9,8 +9,8 @@ interface RequestOptions {
 class HttpClient {
   private baseURL: string;
 
-  constructor(baseURL: string) {
-    this.baseURL = baseURL;
+  constructor(baseURL: string | undefined) {
+    this.baseURL = baseURL || "";
   }
 
   private getToken(): string | null {
@@ -28,14 +28,6 @@ class HttpClient {
     return headers;
   }
 
-  private handle401(): void {
-    console.error(
-      "[HttpClient] 401 Unauthorized — Token hết hạn, tự động đăng xuất.",
-    );
-    localStorage.removeItem("accessToken");
-    window.location.href = "/";
-  }
-
   async request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
     const { method = "GET", body, token } = options;
 
@@ -51,9 +43,10 @@ class HttpClient {
 
     const response = await fetch(`${this.baseURL}${endpoint}`, config);
 
+    // 401 → xóa token, throw Error (thunk sẽ bắt và dispatch logout)
     if (response.status === 401) {
-      this.handle401();
-      throw new Error("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.");
+      localStorage.removeItem("accessToken");
+      throw new Error("UNAUTHORIZED");
     }
 
     const data = await response.json();

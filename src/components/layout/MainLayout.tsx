@@ -7,12 +7,6 @@ import { Logo, Cart, Human } from "../../assets";
 import styles from "./MainLayout.module.css";
 import type { RootState } from "../../store/store";
 
-const MENU_ITEMS = [
-  { path: "/shop", label: "Shop", icon: Logo },
-  { path: "/cart", label: "Cart", icon: Cart },
-  { path: "/profile", label: "Profile", icon: Human },
-];
-
 interface MainLayoutProps {
   children: React.ReactNode;
 }
@@ -21,16 +15,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { userData, loading } = useSelector((state: RootState) => state.auth);
+  const { userData } = useSelector((state: RootState) => state.auth);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  if (loading) {
-    return (
-      <div className={styles.loadingScreen}>{t("auth.checkingAccess")}</div>
-    );
-  }
-
-  if (!userData) return null;
+  const MENU_ITEMS = [
+    { path: "/shop", label: t("layout.nav.shop"), icon: Logo },
+    { path: "/cart", label: t("layout.nav.cart"), icon: Cart },
+    { path: "/profile", label: t("layout.nav.profile"), icon: Human },
+  ];
 
   const handleLogout = () => {
     dispatch(logout());
@@ -50,12 +42,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           <span className={styles.greeting}>
             {t("auth.greeting")},{" "}
             <strong>
-              {userData.firstName} {userData.lastName}
+              {userData?.firstName} {userData?.lastName}
             </strong>
           </span>
           <Link to="/profile">
             <img
-              src={userData.image || userData.avatar}
+              src={userData?.image || userData?.avatar}
               alt="Avatar"
               className={styles.avatar}
             />

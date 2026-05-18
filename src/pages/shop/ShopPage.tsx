@@ -13,7 +13,8 @@ import ProductModal from "../../components/shop/ProductModal";
 import Pagination from "../../components/shop/Pagination";
 import {
   selectProducts,
-  selectProductLoading,
+  selectFetchLoading,
+  selectMutateLoading,
   selectProductError,
 } from "../../store/productSlice";
 import {
@@ -25,6 +26,7 @@ import {
 import type { Product } from "../../types";
 import type { AppDispatch } from "../../store/store";
 import styles from "./ShopPage.module.css";
+import { formatVND } from "../../utils/format";
 
 const PRODUCTS_PER_PAGE = 20;
 
@@ -32,24 +34,19 @@ const ShopPage: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
 
-  // Lấy data từ Redux store — KHÔNG dùng local state cho products
   const products = useSelector(selectProducts);
-  const loading = useSelector(selectProductLoading);
+  const fetchLoading = useSelector(selectFetchLoading);
+  const mutateLoading = useSelector(selectMutateLoading);
   const error = useSelector(selectProductError);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
-  // Fetch products khi mount — qua Redux thunk
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
-
-  const formatVND = (num: number): string =>
-    new Intl.NumberFormat("vi-VN").format(num) + " VND";
 
   const filteredProducts = products.filter((product) =>
     product.title.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -65,6 +62,12 @@ const ShopPage: React.FC = () => {
     setCurrentPage(1);
   }, [searchTerm]);
 
+  useEffect(() => {
+    if (totalPages > 0 && currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [products.length, totalPages, currentPage]);
+
   const handleOpenModal = (product: Product | null = null) => {
     setEditingProduct(product);
     setShowModal(true);
@@ -76,7 +79,6 @@ const ShopPage: React.FC = () => {
   };
 
   const handleSaveProduct = async (formData: Partial<Product>) => {
-    setIsLoading(true);
     try {
       if (editingProduct) {
         await dispatch(
@@ -88,10 +90,9 @@ const ShopPage: React.FC = () => {
         message.success(t("shop.addSuccess"));
       }
       handleCloseModal();
-    } catch (err: any) {
-      message.error(err || t("shop.saveError"));
-    } finally {
-      setIsLoading(false);
+    } catch (err) {
+      const errMsg = err instanceof Error ? err.message : String(err);
+      message.error(errMsg || t("shop.saveError"));
     }
   };
 
@@ -107,8 +108,9 @@ const ShopPage: React.FC = () => {
         try {
           await dispatch(deleteProduct(productId)).unwrap();
           message.success(t("shop.deleteSuccess"));
-        } catch (err: any) {
-          message.error(err || t("shop.saveError"));
+        } catch (err) {
+          const errMsg = err instanceof Error ? err.message : String(err);
+          message.error(errMsg || t("shop.saveError"));
         }
       },
     });
@@ -121,7 +123,6 @@ const ShopPage: React.FC = () => {
     }
   };
 
-  // Skeleton loading cho cards
   const renderSkeletons = () => (
     <div className={styles.productGrid}>
       {Array.from({ length: 8 }).map((_, i) => (
@@ -164,7 +165,7 @@ const ShopPage: React.FC = () => {
       </header>
 
       <div className={styles.content}>
-        {loading ? (
+        {fetchLoading ? (
           renderSkeletons()
         ) : error ? (
           <p className={styles.noResult}>{error}</p>
@@ -184,7 +185,7 @@ const ShopPage: React.FC = () => {
                   formatVND={formatVND}
                   onEdit={handleOpenModal}
                   onDelete={handleDeleteProduct}
-                  isLoading={isLoading}
+                  isLoading={mutateLoading}
                 />
               ))}
             </div>
@@ -202,7 +203,7 @@ const ShopPage: React.FC = () => {
         editingProduct={editingProduct}
         onSave={handleSaveProduct}
         onCancel={handleCloseModal}
-        isLoading={isLoading}
+        isLoading={mutateLoading}
       />
     </div>
   );

@@ -16,11 +16,12 @@ export const fetchUserProfile = createAsyncThunk<UserData, string>(
         companyAddress: data.company?.address?.address || "N/A",
         homeAddress: data.address?.address || "N/A",
       } as UserData;
-    } catch (err: any) {
+    } catch (err) {
       localStorage.removeItem("accessToken");
-      return rejectWithValue(err.message);
+      const message = err instanceof Error ? err.message : String(err);
+      return rejectWithValue(message);
     }
-  }
+  },
 );
 
 export const loginUser = createAsyncThunk<
@@ -38,8 +39,9 @@ export const loginUser = createAsyncThunk<
       localStorage.setItem("accessToken", token);
       await dispatch(fetchUserProfile(token)).unwrap();
       return token;
-    } catch (err: any) {
-      return rejectWithValue(err.message);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return rejectWithValue(message);
     }
-  }
+  },
 );

@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { Product } from "../types";
+import type { RootState } from "./store";
 import {
   fetchProducts,
   fetchProductById,
@@ -11,14 +12,16 @@ import {
 interface ProductState {
   products: Product[];
   currentProduct: Product | null;
-  loading: boolean;
+  fetchLoading: boolean;
+  mutateLoading: boolean;
   error: string;
 }
 
 const initialState: ProductState = {
   products: [],
   currentProduct: null,
-  loading: false,
+  fetchLoading: false,
+  mutateLoading: false,
   error: "",
 };
 
@@ -35,55 +38,79 @@ const productSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch all products
       .addCase(fetchProducts.pending, (state) => {
-        state.loading = true;
+        state.fetchLoading = true;
         state.error = "";
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.products = action.payload;
-        state.loading = false;
+        state.fetchLoading = false;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
-        state.loading = false;
+        state.fetchLoading = false;
         state.error = action.payload as string;
       })
-      // Fetch single product
       .addCase(fetchProductById.pending, (state) => {
-        state.loading = true;
+        state.fetchLoading = true;
         state.error = "";
       })
       .addCase(fetchProductById.fulfilled, (state, action) => {
         state.currentProduct = action.payload;
-        state.loading = false;
+        state.fetchLoading = false;
       })
       .addCase(fetchProductById.rejected, (state, action) => {
-        state.loading = false;
+        state.fetchLoading = false;
         state.error = action.payload as string;
       })
-      // Create product
+      .addCase(createProduct.pending, (state) => {
+        state.mutateLoading = true;
+      })
       .addCase(createProduct.fulfilled, (state, action) => {
         state.products.push(action.payload);
+        state.mutateLoading = false;
       })
-      // Update product
+      .addCase(createProduct.rejected, (state, action) => {
+        state.mutateLoading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(updateProduct.pending, (state) => {
+        state.mutateLoading = true;
+      })
       .addCase(updateProduct.fulfilled, (state, action) => {
-        const index = state.products.findIndex((p) => p.id === action.payload.id);
+        const index = state.products.findIndex(
+          (p) => p.id === action.payload.id,
+        );
         if (index !== -1) {
           state.products[index] = { ...state.products[index], ...action.payload };
         }
+        state.mutateLoading = false;
       })
-      // Delete product
+      .addCase(updateProduct.rejected, (state, action) => {
+        state.mutateLoading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(deleteProduct.pending, (state) => {
+        state.mutateLoading = true;
+      })
       .addCase(deleteProduct.fulfilled, (state, action) => {
         state.products = state.products.filter((p) => p.id !== action.payload);
+        state.mutateLoading = false;
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
+        state.mutateLoading = false;
+        state.error = action.payload as string;
       });
   },
 });
 
-// Selectors
-export const selectProducts = (state: { product: ProductState }) => state.product.products;
-export const selectCurrentProduct = (state: { product: ProductState }) => state.product.currentProduct;
-export const selectProductLoading = (state: { product: ProductState }) => state.product.loading;
-export const selectProductError = (state: { product: ProductState }) => state.product.error;
+export const selectProducts = (state: RootState) => state.product.products;
+export const selectCurrentProduct = (state: RootState) =>
+  state.product.currentProduct;
+export const selectFetchLoading = (state: RootState) =>
+  state.product.fetchLoading;
+export const selectMutateLoading = (state: RootState) =>
+  state.product.mutateLoading;
+export const selectProductError = (state: RootState) => state.product.error;
 
 export const { clearCurrentProduct, clearProductError } = productSlice.actions;
 export default productSlice.reducer;

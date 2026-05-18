@@ -1,29 +1,31 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
+import type { CartItem } from "../../types";
+import type { AppDispatch } from "../../store/store";
 import {
   selectCartList,
   selectCartTotals,
+  selectTotalItems,
   updateQuantity,
   removeFromCart,
 } from "../../store/cartSlice";
+import { formatVND } from "../../utils/format";
 import styles from "./CartPage.module.css";
 import { InputNumber } from "antd";
 
 const CartPage: React.FC = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const cartList = useSelector(selectCartList);
+  const totalItems = useSelector(selectTotalItems);
   const { subTotal, tax, total } = useSelector(selectCartTotals);
-
-  const formatVND = (num: number): string =>
-    new Intl.NumberFormat("vi-VN").format(num) + " VND";
 
   return (
     <div className={styles.container}>
       <div className={styles.cartHeader}>
         <h2>{t("cart.title")}</h2>
-        <span>{t("cart.itemCount", { count: cartList.length })}</span>
+        <span>{t("cart.itemCount", { count: totalItems })}</span>
       </div>
 
       {cartList.length === 0 ? (
@@ -31,8 +33,8 @@ const CartPage: React.FC = () => {
       ) : (
         <div className={styles.cartContent}>
           <div className={styles.itemList}>
-            {cartList.map((item: any, index: number) => (
-              <div key={`${item.id}-${index}`} className={styles.cartItem}>
+            {cartList.map((item: CartItem) => (
+              <div key={`${item.id}-${item.selectedColor}`}>
                 <img
                   src={item.thumbnail || item.image}
                   alt={item.title || item.name}

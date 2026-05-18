@@ -8,10 +8,11 @@ export const fetchProducts = createAsyncThunk<Product[], void>(
     try {
       const data = await productService.getAll();
       return data.products;
-    } catch (err: any) {
-      return rejectWithValue(err.message);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return rejectWithValue(message);
     }
-  }
+  },
 );
 
 export const fetchProductById = createAsyncThunk<Product, string | number>(
@@ -19,10 +20,11 @@ export const fetchProductById = createAsyncThunk<Product, string | number>(
   async (id, { rejectWithValue }) => {
     try {
       return await productService.getById(id);
-    } catch (err: any) {
-      return rejectWithValue(err.message);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return rejectWithValue(message);
     }
-  }
+  },
 );
 
 export const createProduct = createAsyncThunk<Product, Partial<Product>>(
@@ -30,10 +32,11 @@ export const createProduct = createAsyncThunk<Product, Partial<Product>>(
   async (product, { rejectWithValue }) => {
     try {
       return await productService.create(product);
-    } catch (err: any) {
-      return rejectWithValue(err.message);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return rejectWithValue(message);
     }
-  }
+  },
 );
 
 export const updateProduct = createAsyncThunk<
@@ -44,10 +47,11 @@ export const updateProduct = createAsyncThunk<
   async ({ id, data }, { rejectWithValue }) => {
     try {
       return await productService.update(id, data);
-    } catch (err: any) {
-      return rejectWithValue(err.message);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return rejectWithValue(message);
     }
-  }
+  },
 );
 
 export const deleteProduct = createAsyncThunk<number, number>(
@@ -56,8 +60,9 @@ export const deleteProduct = createAsyncThunk<number, number>(
     try {
       await productService.delete(id);
       return id;
-    } catch (err: any) {
-      return rejectWithValue(err.message);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      return rejectWithValue(message);
     }
-  }
+  },
 );

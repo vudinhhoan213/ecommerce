@@ -5,6 +5,7 @@ import { publicRoutes } from "./routes";
 import AuthMiddleware from "./middleware/AuthMiddleware";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import { fetchUserProfile } from "./store/authThunk";
+import { setUnauthenticated } from "./store/authSlice";
 import type { AppDispatch } from "./store/store";
 
 const App: React.FC = () => {
@@ -15,7 +16,7 @@ const App: React.FC = () => {
     if (token) {
       dispatch(fetchUserProfile(token));
     } else {
-      dispatch({ type: "auth/fetchUserProfile/rejected" });
+      dispatch(setUnauthenticated());
     }
   }, [dispatch]);
 

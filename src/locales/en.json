@@ -53,7 +53,10 @@
     "selectedColor": "Selected color",
     "buyNow": "Buy Now",
     "addToCart": "Add to Cart",
-    "addedToCart": "Added {{name}} ({{color}}) to cart!"
+    "addedToCart": "Added {{name}} ({{color}}) to cart!",
+    "colorBlack": "Black",
+    "colorWhite": "White",
+    "colorBlue": "Blue"
   },
   "productModal": {
     "editTitle": "Edit Product",
@@ -94,6 +97,11 @@
   "layout": {
     "appName": "Mobile Shopping",
     "menu": "Menu",
+    "nav": {
+      "shop": "Shop",
+      "cart": "Cart",
+      "profile": "Profile"
+    },
     "footer": {
       "about": "About Us",
       "aboutText": "Mobile Shopping - Vietnam's leading mobile phone store",

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
@@ -10,14 +10,13 @@ import { addToCart } from "../../store/cartSlice";
 import { fetchProductById } from "../../store/productThunk";
 import {
   selectCurrentProduct,
-  selectProductLoading,
+  selectFetchLoading,
   selectProductError,
   clearCurrentProduct,
 } from "../../store/productSlice";
 import type { AppDispatch } from "../../store/store";
 import styles from "./ProductDetailPage.module.css";
-
-const DEFAULT_COLORS = ["Đen", "Trắng", "Xanh"];
+import { formatVND } from "../../utils/format";
 
 const FALLBACK_IMAGES_BY_COLOR: Record<string, string> = {
   Đen: "https://dummyjson.com/image/400x300/282828/ffffff?text=M%C3%A0u+%C4%90en",
@@ -32,32 +31,35 @@ const ProductDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
-  // Lấy data từ Redux — KHÔNG fetch trực tiếp
   const product = useSelector(selectCurrentProduct);
-  const loading = useSelector(selectProductLoading);
+  const loading = useSelector(selectFetchLoading);
   const error = useSelector(selectProductError);
 
   const [selectedColorIndex, setSelectedColorIndex] = useState(0);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // Fetch product qua Redux thunk
+  const defaultColors = useMemo(
+    () => [t("productDetail.colorBlack"), t("productDetail.colorWhite"), t("productDetail.colorBlue")],
+    [t],
+  );
+
   useEffect(() => {
     if (productId) {
       dispatch(fetchProductById(productId));
     }
-    // Cleanup khi rời trang
     return () => {
       dispatch(clearCurrentProduct());
     };
   }, [productId, dispatch]);
 
-  const formatVND = (num: number): string =>
-    new Intl.NumberFormat("vi-VN").format(num) + " VND";
+  const colors = useMemo(
+    () => product?.colors ?? defaultColors,
+    [product, defaultColors],
+  );
 
-  const getImages = (): string[] => {
+  const images = useMemo(() => {
     if (!product) return [];
     const apiImages = product.images || [];
-    const colors = product.colors || DEFAULT_COLORS;
     if (apiImages.length >= colors.length) return apiImages;
 
     const result: string[] = [];
@@ -73,10 +75,7 @@ const ProductDetailPage: React.FC = () => {
       }
     }
     return result;
-  };
-
-  const images = getImages();
-  const colors = product?.colors || DEFAULT_COLORS;
+  }, [product, colors]);
 
   const handleColorSelect = useCallback(
     (index: number) => {

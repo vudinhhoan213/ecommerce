@@ -1,38 +1,17 @@
-// ===== Auth Service — Tất cả API liên quan đến auth =====
 import httpClient from "./httpClient";
-import type { LoginCredentials } from "../types";
-
-interface LoginResponse {
-  accessToken?: string;
-  token?: string;
-  [key: string]: unknown;
-}
-
-interface ProfileResponse {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone?: string;
-  image: string;
-  gender: string;
-  birthDate?: string;
-  address?: { address: string };
-  company?: { address?: { address: string } };
-  [key: string]: unknown;
-}
+import type { ApiUserData, LoginCredentials, LoginResponse } from "../types";
 
 const authService = {
   login: (credentials: LoginCredentials): Promise<LoginResponse> => {
     return httpClient.post<LoginResponse>("/auth/login", {
       username: credentials.username.trim(),
-      password: credentials.password,
+      password: credentials.password.trim(),
       expiresInMins: 30,
     });
   },
 
-  getProfile: (token: string): Promise<ProfileResponse> => {
-    return httpClient.get<ProfileResponse>("/auth/me", token);
+  getProfile: (token: string): Promise<ApiUserData> => {
+    return httpClient.get<ApiUserData>("/auth/me", token);
   },
 };
 

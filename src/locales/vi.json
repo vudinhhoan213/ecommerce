@@ -53,7 +53,10 @@
     "selectedColor": "Màu đã chọn",
     "buyNow": "Mua Ngay",
     "addToCart": "Thêm vào giỏ hàng",
-    "addedToCart": "Đã thêm {{name}} ({{color}}) vào giỏ hàng!"
+    "addedToCart": "Đã thêm {{name}} ({{color}}) vào giỏ hàng!",
+    "colorBlack": "Đen",
+    "colorWhite": "Trắng",
+    "colorBlue": "Xanh"
   },
   "productModal": {
     "editTitle": "Sửa Sản Phẩm",
@@ -71,17 +74,17 @@
     "addButton": "Thêm mới"
   },
   "cart": {
-    "title": "Cart",
-    "itemCount": "{{count}} items in bag",
+    "title": "Giỏ hàng",
+    "itemCount": "{{count}} sản phẩm trong giỏ",
     "empty": "Không có sản phẩm nào trong giỏ.",
     "phone": "Điện thoại",
     "removeItem": "Xóa món",
-    "subTotal": "SubTotal",
-    "tax": "Tax",
-    "total": "Total"
+    "subTotal": "Tạm tính",
+    "tax": "Thuế",
+    "total": "Tổng cộng"
   },
   "profile": {
-    "title": "My Profile",
+    "title": "Trang cá nhân",
     "notLoggedIn": "Vui lòng đăng nhập để xem thông tin cá nhân.",
     "personalInfo": "Thông tin cá nhân",
     "dateOfBirth": "Ngày sinh",
@@ -94,6 +97,11 @@
   "layout": {
     "appName": "Mobile Shopping",
     "menu": "Menu",
+    "nav": {
+      "shop": "Cửa hàng",
+      "cart": "Giỏ hàng",
+      "profile": "Tài khoản"
+    },
     "footer": {
       "about": "Về chúng tôi",
       "aboutText": "Mobile Shopping - Cửa hàng điện thoại di động hàng đầu Việt Nam",
