@@ -21,6 +21,7 @@ import {
   PhoneOutlined,
 } from "@ant-design/icons";
 import type { RootState } from "../../store/store";
+import PageContainer from "../../components/common/PageContainer";
 import styles from "./ProfilePage.module.css";
 
 const { Title, Text } = Typography;
@@ -46,7 +47,7 @@ const ProfilePage: React.FC = () => {
   const genderColor = userData.gender === "male" ? "blue" : "magenta";
 
   return (
-    <div className={styles.container}>
+    <PageContainer title={t("profile.title")}>
       <Card className={styles.headerCard} bordered={false}>
         <div className={styles.headerContent}>
           <Avatar
@@ -127,7 +128,7 @@ const ProfilePage: React.FC = () => {
           </Descriptions.Item>
         </Descriptions>
       </Card>
-    </div>
+    </PageContainer>
   );
 };
 

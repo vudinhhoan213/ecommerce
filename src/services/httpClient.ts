@@ -43,9 +43,7 @@ class HttpClient {
 
     const response = await fetch(`${this.baseURL}${endpoint}`, config);
 
-    // 401 → xóa token, throw Error (thunk sẽ bắt và dispatch logout)
     if (response.status === 401) {
-      localStorage.removeItem("accessToken");
       throw new Error("UNAUTHORIZED");
     }
 

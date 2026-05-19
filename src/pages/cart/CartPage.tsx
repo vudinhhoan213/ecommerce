@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import type { CartItem } from "../../types";
 import type { AppDispatch } from "../../store/store";
+import PageContainer from "../../components/common/PageContainer";
 import {
   selectCartList,
   selectCartTotals,
@@ -12,7 +13,6 @@ import {
 } from "../../store/cartSlice";
 import { formatVND } from "../../utils/format";
 import styles from "./CartPage.module.css";
-import { InputNumber } from "antd";
 
 const CartPage: React.FC = () => {
   const { t } = useTranslation();
@@ -22,50 +22,89 @@ const CartPage: React.FC = () => {
   const { subTotal, tax, total } = useSelector(selectCartTotals);
 
   return (
-    <div className={styles.container}>
-      <div className={styles.cartHeader}>
-        <h2>{t("cart.title")}</h2>
-        <span>{t("cart.itemCount", { count: totalItems })}</span>
-      </div>
-
+    <PageContainer
+      title={t("cart.title")}
+    >
       {cartList.length === 0 ? (
         <p className={styles.emptyCart}>{t("cart.empty")}</p>
       ) : (
         <div className={styles.cartContent}>
+          <span className={styles.itemCount}>
+            {t("cart.itemCount", { count: totalItems })}
+          </span>
           <div className={styles.itemList}>
             {cartList.map((item: CartItem) => (
-              <div key={`${item.id}-${item.selectedColor}`}>
-                <img
-                  src={item.thumbnail || item.image}
-                  alt={item.title || item.name}
-                  className={styles.itemImage}
-                />
+              <div
+                key={`${item.id}-${item.selectedColor}`}
+                className={styles.cartItem}
+              >
+                <div className={styles.itemImageWrapper}>
+                  <img
+                    src={item.thumbnail || item.image}
+                    alt={item.title || item.name}
+                    className={styles.itemImage}
+                  />
+                </div>
+
                 <div className={styles.itemInfo}>
-                  <h4>
+                  <h4 className={styles.itemTitle}>
                     {t("cart.phone")} {item.title || item.name}
                   </h4>
-                  <p>{item.description}</p>
+                  <p className={styles.itemDescription}>{item.description}</p>
                   <div className={styles.itemPrice}>
-                    {formatVND(item.price)}
+                    {formatVND(item.price * item.quantity)}
                   </div>
                 </div>
-                <div className={styles.qtyController}>
-                  <InputNumber
-                    min={1}
-                    value={item.quantity}
-                    onChange={(value) => {
-                      if (value !== null && value > 0) {
+
+                <div className={styles.itemActions}>
+                  <div className={styles.qtyController}>
+                    <button
+                      className={styles.qtyBtn}
+                      onClick={() =>
                         dispatch(
                           updateQuantity({
                             productId: item.id,
                             color: item.selectedColor,
-                            newQuantity: value,
+                            newQuantity: item.quantity + 1,
                           }),
-                        );
+                        )
                       }
-                    }}
-                    style={{ width: "120px", margin: "0 10px" }}
-                  />
+                    >
+                      +
+                    </button>
+                    <input
+                      type="number"
+                      className={styles.qtyInput}
+                      value={item.quantity}
+                      min={1}
+                      onChange={(e) => {
+                        const val = parseInt(e.target.value, 10);
+                        if (!isNaN(val) && val > 0) {
+                          dispatch(
+                            updateQuantity({
+                              productId: item.id,
+                              color: item.selectedColor,
+                              newQuantity: val,
+                            }),
+                          );
+                        }
+                      }}
+                    />
+                    <button
+                      className={styles.qtyBtn}
+                      onClick={() =>
+                        dispatch(
+                          updateQuantity({
+                            productId: item.id,
+                            color: item.selectedColor,
+                            newQuantity: item.quantity - 1,
+                          }),
+                        )
+                      }
+                    >
+                      -
+                    </button>
+                  </div>
                   <button
                     onClick={() =>
                       dispatch(
@@ -77,12 +116,13 @@ const CartPage: React.FC = () => {
                     }
                     className={styles.removeBtn}
                   >
-                    {t("cart.removeItem")}
+                    ✕
                   </button>
                 </div>
               </div>
             ))}
           </div>
+
           <div className={styles.billingSection}>
             <div className={styles.billingRow}>
               <span>{t("cart.subTotal")}</span>
@@ -99,7 +139,7 @@ const CartPage: React.FC = () => {
           </div>
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 };
 

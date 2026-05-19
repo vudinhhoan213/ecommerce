@@ -6,6 +6,7 @@ import { message, Spin } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import RatingStars from "../../components/common/RatingStars";
 import CartIcon from "../../components/common/CartIcon";
+import PageContainer from "../../components/common/PageContainer";
 import { addToCart } from "../../store/cartSlice";
 import { fetchProductById } from "../../store/productThunk";
 import {
@@ -117,135 +118,126 @@ const ProductDetailPage: React.FC = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <div className={styles.breadcrumb}>
-          <div className={styles.breadcrumbContainer}>
-            <div className={styles.breadcrumbText}>
-              <h2>
-                <Link to="/shop" className={styles.breadcrumbLink}>
-                  {t("shop.title")}
-                </Link>{" "}
-                / {t("productDetail.breadcrumb")}
-              </h2>
+    <PageContainer
+      title={
+        <>
+          <Link to="/shop" className={styles.breadcrumbLink}>
+            {t("shop.title")}
+          </Link>
+          {" / "}
+          {t("productDetail.breadcrumb")}
+        </>
+      }
+      headerRight={<CartIcon />}
+    >
+      {loading ? (
+        <div className={styles.loading}>
+          <Spin size="large" tip={t("productDetail.loadingDetail")} />
+        </div>
+      ) : error ? (
+        <div className={styles.loading}>{error}</div>
+      ) : product ? (
+        <div className={styles.productSection}>
+          <div className={styles.imageGallery}>
+            <div className={styles.imageSlider}>
+              <button
+                type="button"
+                className={`${styles.arrowBtn} ${styles.arrowBtnLeft}`}
+                onClick={handlePrevImage}
+              >
+                <LeftOutlined />
+              </button>
+              <div className={styles.mainImageWrapper}>
+                <img
+                  key={currentImageIndex}
+                  src={images[currentImageIndex]}
+                  alt={product.title}
+                  className={styles.mainImage}
+                />
+              </div>
+              <button
+                type="button"
+                className={`${styles.arrowBtn} ${styles.arrowBtnRight}`}
+                onClick={handleNextImage}
+              >
+                <RightOutlined />
+              </button>
+              {images.length > 1 && (
+                <span className={styles.imageCounter}>
+                  {currentImageIndex + 1}/{images.length}
+                </span>
+              )}
             </div>
-            <div className={styles.cartIconScaleWrapper}>
-              <CartIcon />
+
+            {images.length > 1 && (
+              <div className={styles.thumbnailList}>
+                {images.map((img, index) => (
+                  <img
+                    key={index}
+                    src={img}
+                    alt={colors[index] || `Image ${index + 1}`}
+                    className={`${styles.thumbnailItem} ${index === currentImageIndex ? styles.thumbnailActive : ""}`}
+                    onClick={() => {
+                      setCurrentImageIndex(index);
+                      setSelectedColorIndex(index % colors.length);
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+
+            <div className={styles.colorSection}>
+              <span className={styles.colorLabel}>
+                {t("productDetail.selectColor")}
+              </span>
+              <div className={styles.colorList}>
+                {colors.map((color, index) => (
+                  <button
+                    key={color}
+                    type="button"
+                    onClick={() => handleColorSelect(index)}
+                    className={
+                      selectedColorIndex === index
+                        ? styles.colorOptionActive
+                        : ""
+                    }
+                  >
+                    {color}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.infoSection}>
+            <h2>{product.title}</h2>
+            <p>{product.description}</p>
+            <div className={styles.price}>{formatVND(product.price)}</div>
+            <RatingStars rating={product.rating} />
+            <div className={styles.selectedColorText}>
+              {t("productDetail.selectedColor")}:{" "}
+              <strong>{colors[selectedColorIndex]}</strong>
+            </div>
+            <div className={styles.actions}>
+              <button
+                type="button"
+                className={styles.buyNowBtn}
+                onClick={() => handleAddToCart(true)}
+              >
+                {t("productDetail.buyNow")}
+              </button>
+              <button
+                type="button"
+                className={styles.addToCartBtn}
+                onClick={() => handleAddToCart(false)}
+              >
+                {t("productDetail.addToCart")}
+              </button>
             </div>
           </div>
         </div>
-      </header>
-
-      <div className={styles.content}>
-        {loading ? (
-          <div className={styles.loading}>
-            <Spin size="large" tip={t("productDetail.loadingDetail")} />
-          </div>
-        ) : error ? (
-          <div className={styles.loading}>{error}</div>
-        ) : product ? (
-          <div className={styles.productSection}>
-            <div className={styles.imageGallery}>
-              <div className={styles.imageSlider}>
-                <button
-                  type="button"
-                  className={`${styles.arrowBtn} ${styles.arrowBtnLeft}`}
-                  onClick={handlePrevImage}
-                >
-                  <LeftOutlined />
-                </button>
-                <div className={styles.mainImageWrapper}>
-                  <img
-                    key={currentImageIndex}
-                    src={images[currentImageIndex]}
-                    alt={product.title}
-                    className={styles.mainImage}
-                  />
-                </div>
-                <button
-                  type="button"
-                  className={`${styles.arrowBtn} ${styles.arrowBtnRight}`}
-                  onClick={handleNextImage}
-                >
-                  <RightOutlined />
-                </button>
-                {images.length > 1 && (
-                  <span className={styles.imageCounter}>
-                    {currentImageIndex + 1}/{images.length}
-                  </span>
-                )}
-              </div>
-
-              {images.length > 1 && (
-                <div className={styles.thumbnailList}>
-                  {images.map((img, index) => (
-                    <img
-                      key={index}
-                      src={img}
-                      alt={colors[index] || `Image ${index + 1}`}
-                      className={`${styles.thumbnailItem} ${index === currentImageIndex ? styles.thumbnailActive : ""}`}
-                      onClick={() => {
-                        setCurrentImageIndex(index);
-                        setSelectedColorIndex(index % colors.length);
-                      }}
-                    />
-                  ))}
-                </div>
-              )}
-
-              <div className={styles.colorSection}>
-                <span className={styles.colorLabel}>
-                  {t("productDetail.selectColor")}
-                </span>
-                <div className={styles.colorList}>
-                  {colors.map((color, index) => (
-                    <button
-                      key={color}
-                      type="button"
-                      onClick={() => handleColorSelect(index)}
-                      className={
-                        selectedColorIndex === index
-                          ? styles.colorOptionActive
-                          : ""
-                      }
-                    >
-                      {color}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.infoSection}>
-              <h2>{product.title}</h2>
-              <p>{product.description}</p>
-              <div className={styles.price}>{formatVND(product.price)}</div>
-              <RatingStars rating={product.rating} />
-              <div className={styles.selectedColorText}>
-                {t("productDetail.selectedColor")}:{" "}
-                <strong>{colors[selectedColorIndex]}</strong>
-              </div>
-              <div className={styles.actions}>
-                <button
-                  type="button"
-                  className={styles.buyNowBtn}
-                  onClick={() => handleAddToCart(true)}
-                >
-                  {t("productDetail.buyNow")}
-                </button>
-                <button
-                  type="button"
-                  className={styles.addToCartBtn}
-                  onClick={() => handleAddToCart(false)}
-                >
-                  {t("productDetail.addToCart")}
-                </button>
-              </div>
-            </div>
-          </div>
-        ) : null}
-      </div>
-    </div>
+      ) : null}
+    </PageContainer>
   );
 };
 

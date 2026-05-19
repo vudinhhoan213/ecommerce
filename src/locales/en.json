@@ -42,7 +42,16 @@
     "deleteSuccess": "Product deleted successfully!",
     "updateSuccess": "Product updated successfully!",
     "addSuccess": "Product added successfully!",
-    "saveError": "Error saving product"
+    "saveError": "Error saving product",
+    "filter": {
+      "title": "Filter",
+      "price": "Price",
+      "rating": "Rating",
+      "from": "From",
+      "to": "To",
+      "stars": "Stars",
+      "reset": "Reset Filter"
+    }
   },
   "productDetail": {
     "breadcrumb": "Product",

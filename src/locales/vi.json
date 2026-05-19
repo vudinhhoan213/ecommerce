@@ -42,7 +42,16 @@
     "deleteSuccess": "Xóa sản phẩm thành công!",
     "updateSuccess": "Cập nhật sản phẩm thành công!",
     "addSuccess": "Thêm sản phẩm thành công!",
-    "saveError": "Lỗi khi lưu sản phẩm"
+    "saveError": "Lỗi khi lưu sản phẩm",
+    "filter": {
+      "title": "Bộ lọc",
+      "price": "Giá",
+      "rating": "Đánh giá",
+      "from": "Từ",
+      "to": "Đến",
+      "stars": "Sao",
+      "reset": "Xóa bộ lọc"
+    }
   },
   "productDetail": {
     "breadcrumb": "Product",

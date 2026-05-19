@@ -155,6 +155,38 @@
   opacity: 1;
 }
 
+/* ===== Add to Cart Button (hover) ===== */
+.addToCartBtn {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px 0;
+  border: none;
+  background-color: #00bee6;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  opacity: 0;
+  transform: translateY(100%);
+  transition: all 0.2s ease;
+  border-radius: 0 0 12px 12px;
+}
+
+.addToCartBtn:hover {
+  background-color: #009fc2;
+}
+
+.productCardWrapper:hover .addToCartBtn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .editBtn,
 .deleteBtn {
   width: 26px;

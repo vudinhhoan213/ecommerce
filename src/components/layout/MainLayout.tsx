@@ -17,6 +17,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const dispatch = useDispatch();
   const { userData } = useSelector((state: RootState) => state.auth);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [showLogout, setShowLogout] = useState(false);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    setShowLogout(false);
+    navigate("/");
+  };
 
   const MENU_ITEMS = [
     { path: "/shop", label: t("layout.nav.shop"), icon: Logo },
@@ -24,13 +31,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     { path: "/profile", label: t("layout.nav.profile"), icon: Human },
   ];
 
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate("/");
-  };
-
   return (
     <div className={styles.layoutContainer}>
+      {/* Header */}
       <header className={styles.header}>
         <div className={styles.headerLeft}>
           <Link to="/shop">
@@ -45,19 +48,30 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               {userData?.firstName} {userData?.lastName}
             </strong>
           </span>
-          <Link to="/profile">
-            <img
-              src={userData?.image || userData?.avatar}
-              alt="Avatar"
-              className={styles.avatar}
-            />
-          </Link>
-          <button onClick={handleLogout} className={styles.logoutBtn}>
-            {t("auth.logout")}
-          </button>
+          <div
+            className={styles.avatarWrapper}
+            onMouseEnter={() => setShowLogout(true)}
+            onMouseLeave={() => setShowLogout(false)}
+          >
+            <Link to="/profile">
+              <img
+                src={userData?.image || userData?.avatar}
+                alt="Avatar"
+                className={styles.avatar}
+              />
+            </Link>
+            {showLogout && (
+              <div className={styles.logoutDropdown}>
+                <button onClick={handleLogout} className={styles.logoutBtn}>
+                  {t("auth.logout")}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </header>
 
+      {/* Sidebar + Content */}
       <div className={styles.subContainer}>
         <aside
           className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ""}`}
@@ -96,31 +110,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             ))}
           </ul>
         </aside>
+
+        {/* Page content */}
         <main className={styles.mainContent}>{children}</main>
       </div>
-
-      <footer className={styles.footer}>
-        <div className={styles.footerContent}>
-          <div className={styles.footerSection}>
-            <h4>{t("layout.footer.about")}</h4>
-            <p>{t("layout.footer.aboutText")}</p>
-          </div>
-          <div className={styles.footerSection}>
-            <h4>{t("layout.footer.contact")}</h4>
-            <p>{t("layout.footer.email")}</p>
-            <p>{t("layout.footer.phone")}</p>
-          </div>
-          <div className={styles.footerSection}>
-            <h4>{t("layout.footer.follow")}</h4>
-            <p>{t("layout.footer.social")}</p>
-          </div>
-          <div className={styles.footerSection}>
-            <h4>{t("layout.footer.support")}</h4>
-            <p>{t("layout.footer.privacy")}</p>
-            <p>{t("layout.footer.terms")}</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };
