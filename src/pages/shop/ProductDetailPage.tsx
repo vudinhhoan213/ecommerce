@@ -2,12 +2,14 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { message, Spin } from "antd";
+import { Spin } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import RatingStars from "../../components/common/RatingStars";
 import CartIcon from "../../components/common/CartIcon";
 import PageContainer from "../../components/common/PageContainer";
+import { useRequireAuth } from "../../hooks/useRequireAuth";
 import { addToCart } from "../../store/cartSlice";
+import { emitCartAdd } from "../../store/cartEffect$";
 import { fetchProductById } from "../../store/productThunk";
 import {
   selectCurrentProduct,
@@ -31,6 +33,7 @@ const ProductDetailPage: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
+  const requireAuth = useRequireAuth();
 
   const product = useSelector(selectCurrentProduct);
   const loading = useSelector(selectFetchLoading);
@@ -103,18 +106,15 @@ const ProductDetailPage: React.FC = () => {
   }, [currentImageIndex, images.length, colors.length]);
 
   const handleAddToCart = (goToCart = false) => {
-    if (!product) return;
-    dispatch(addToCart({ product, color: colors[selectedColorIndex] }));
-    if (goToCart) {
-      navigate("/cart");
-    } else {
-      message.success(
-        t("productDetail.addedToCart", {
-          name: product.title,
-          color: colors[selectedColorIndex],
-        }),
-      );
-    }
+    requireAuth(() => {
+      if (!product) return;
+      dispatch(addToCart({ product, color: colors[selectedColorIndex] }));
+      if (goToCart) {
+        navigate("/cart");
+      } else {
+        emitCartAdd(product.title);
+      }
+    });
   };
 
   return (

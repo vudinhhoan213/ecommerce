@@ -1,19 +1,16 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   Button,
-  Input,
   Space,
   Modal,
   message,
   Skeleton,
   Card,
   Popover,
-  Select,
-  Divider,
 } from "antd";
 import {
-  SearchOutlined,
   FilterOutlined,
   PlusOutlined,
   ExclamationCircleOutlined,
@@ -21,6 +18,12 @@ import {
 import { useTranslation } from "react-i18next";
 import ProductCard from "../../components/shop/ProductCard";
 import ProductModal from "../../components/shop/ProductModal";
+import SearchAutocomplete from "../../components/shop/SearchAutocomplete";
+import FilterPopover, {
+  DEFAULT_FILTER,
+  type FilterState,
+} from "../../components/shop/FilterPopover";
+import { useDebounceSearch } from "../../hooks/useDebounceSearch";
 import PageContainer from "../../components/common/PageContainer";
 import Pagination from "../../components/shop/Pagination";
 import {
@@ -42,27 +45,10 @@ import { formatVND } from "../../utils/format";
 
 const PRODUCTS_PER_PAGE = 20;
 
-const PRICE_OPTIONS = [0, 1000, 5000, 10000, 20000, 50000, 100000];
-
-const RATING_OPTIONS = [0, 1, 2, 3, 4, 5];
-
-interface FilterState {
-  priceFrom: number;
-  priceTo: number;
-  ratingFrom: number;
-  ratingTo: number;
-}
-
-const DEFAULT_FILTER: FilterState = {
-  priceFrom: 0,
-  priceTo: 100000,
-  ratingFrom: 0,
-  ratingTo: 5,
-};
-
 const ShopPage: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   const products = useSelector(selectProducts);
   const fetchLoading = useSelector(selectFetchLoading);
@@ -77,16 +63,9 @@ const ShopPage: React.FC = () => {
   const [filter, setFilter] = useState<FilterState>(DEFAULT_FILTER);
   const [filterOpen, setFilterOpen] = useState(false);
 
-  // Debounce search — chỉ filter sau 500ms ngừng nhập
-  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(() => {
-    debounceTimer.current = setTimeout(() => {
-      setDebouncedSearch(searchTerm);
-    }, 500);
-    return () => {
-      if (debounceTimer.current) clearTimeout(debounceTimer.current);
-    };
-  }, [searchTerm]);
+  const emitSearch = useDebounceSearch((value) => {
+    setDebouncedSearch(value);
+  }, 500);
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -128,110 +107,6 @@ const ShopPage: React.FC = () => {
       setCurrentPage(totalPages);
     }
   }, [products.length, totalPages, currentPage]);
-
-  const handleResetFilter = () => {
-    setFilter(DEFAULT_FILTER);
-  };
-
-  const filterContent = (
-    <div style={{ width: 280, padding: "8px 0" }}>
-      <h4 style={{ textAlign: "center", margin: "0 0 12px" }}>
-        {t("shop.filter.title")}
-      </h4>
-      <Divider style={{ margin: "8px 0" }} />
-
-      <div style={{ marginBottom: 16 }}>
-        <strong>{t("shop.filter.price")}</strong>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            marginTop: 8,
-          }}
-        >
-          <span>{t("shop.filter.from")}:</span>
-          <Select
-            value={filter.priceFrom}
-            onChange={(val) => setFilter((f) => ({ ...f, priceFrom: val }))}
-            style={{ flex: 1 }}
-            options={PRICE_OPTIONS.filter((p) => p <= filter.priceTo).map(
-              (p) => ({ value: p, label: formatVND(p) }),
-            )}
-          />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            marginTop: 8,
-          }}
-        >
-          <span>{t("shop.filter.to")}:</span>
-          <Select
-            value={filter.priceTo}
-            onChange={(val) => setFilter((f) => ({ ...f, priceTo: val }))}
-            style={{ flex: 1 }}
-            options={PRICE_OPTIONS.filter((p) => p >= filter.priceFrom).map(
-              (p) => ({ value: p, label: formatVND(p) }),
-            )}
-          />
-        </div>
-      </div>
-
-      <div style={{ marginBottom: 16 }}>
-        <strong>{t("shop.filter.rating")}</strong>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            marginTop: 8,
-          }}
-        >
-          <span>{t("shop.filter.from")}:</span>
-          <Select
-            value={filter.ratingFrom}
-            onChange={(val) => setFilter((f) => ({ ...f, ratingFrom: val }))}
-            style={{ flex: 1 }}
-            options={RATING_OPTIONS.filter((r) => r <= filter.ratingTo).map(
-              (r) => ({
-                value: r,
-                label: `${r} ${t("shop.filter.stars")}`,
-              }),
-            )}
-          />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            marginTop: 8,
-          }}
-        >
-          <span>{t("shop.filter.to")}:</span>
-          <Select
-            value={filter.ratingTo}
-            onChange={(val) => setFilter((f) => ({ ...f, ratingTo: val }))}
-            style={{ flex: 1 }}
-            options={RATING_OPTIONS.filter((r) => r >= filter.ratingFrom).map(
-              (r) => ({
-                value: r,
-                label: `${r} ${t("shop.filter.stars")}`,
-              }),
-            )}
-          />
-        </div>
-      </div>
-
-      <Divider style={{ margin: "8px 0" }} />
-      <Button block onClick={handleResetFilter}>
-        {t("shop.filter.reset")}
-      </Button>
-    </div>
-  );
 
   const handleOpenModal = (product: Product | null = null) => {
     setEditingProduct(product);
@@ -301,17 +176,27 @@ const ShopPage: React.FC = () => {
 
   const headerActions = (
     <Space wrap align="center">
-      <Input.Search
-        placeholder={t("common.search")}
+      <SearchAutocomplete
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        onSearch={(value) => setSearchTerm(value)}
-        enterButton={<SearchOutlined />}
+        onChange={(val) => {
+          setSearchTerm(val);
+          emitSearch(val);
+        }}
+        onSearch={(val) => {
+          setSearchTerm(val);
+          emitSearch(val);
+        }}
+        onSelectProduct={(id) => navigate(`/shop/${id}`)}
         className={styles.searchInput}
-        allowClear
       />
       <Popover
-        content={filterContent}
+        content={
+          <FilterPopover
+            filter={filter}
+            onFilterChange={setFilter}
+            onReset={() => setFilter(DEFAULT_FILTER)}
+          />
+        }
         trigger="click"
         open={filterOpen}
         onOpenChange={setFilterOpen}

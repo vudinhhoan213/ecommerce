@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { ShoppingCartOutlined } from "@ant-design/icons";
-import { message } from "antd";
 import RatingStars from "../common/RatingStars";
 import { addToCart } from "../../store/cartSlice";
+import { emitCartAdd } from "../../store/cartEffect$";
 import styles from "../../pages/shop/ShopPage.module.css";
 import type { Product } from "../../types";
 import type { AppDispatch } from "../../store/store";
@@ -33,7 +33,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
     e.stopPropagation();
     const defaultColor = product.colors?.[0] || "Default";
     dispatch(addToCart({ product, color: defaultColor }));
-    message.success(t("productDetail.addedToCart", { name: product.title, color: defaultColor }));
+    emitCartAdd(product.title);
   };
 
   return (

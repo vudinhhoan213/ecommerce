@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { publicRoutes } from "./routes";
+import { publicRoutes, protectedRoutes } from "./routes";
 import AuthMiddleware from "./middleware/AuthMiddleware";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import { fetchUserProfile } from "./store/authThunk";
@@ -24,17 +24,39 @@ const App: React.FC = () => {
     <ErrorBoundary>
       <BrowserRouter>
         <Routes>
+          {/* Public routes — xem tự do, không cần đăng nhập */}
           {publicRoutes.map((route, index) => {
             const Page = route.component;
             const Layout = route.layout ? route.layout : Fragment;
 
-            if (route.path === "/") {
-              return <Route key={index} path={route.path} element={<Page />} />;
+            if (route.layout === null) {
+              return (
+                <Route key={`pub-${index}`} path={route.path} element={<Page />} />
+              );
             }
 
             return (
-              <Route key={index} element={<AuthMiddleware />}>
+              <Route
+                key={`pub-${index}`}
+                path={route.path}
+                element={
+                  <Layout>
+                    <Page />
+                  </Layout>
+                }
+              />
+            );
+          })}
+
+          {/* Protected routes — cần đăng nhập, redirect kèm returnUrl */}
+          <Route element={<AuthMiddleware />}>
+            {protectedRoutes.map((route, index) => {
+              const Page = route.component;
+              const Layout = route.layout ? route.layout : Fragment;
+
+              return (
                 <Route
+                  key={`priv-${index}`}
                   path={route.path}
                   element={
                     <Layout>
@@ -42,9 +64,9 @@ const App: React.FC = () => {
                     </Layout>
                   }
                 />
-              </Route>
-            );
-          })}
+              );
+            })}
+          </Route>
         </Routes>
       </BrowserRouter>
     </ErrorBoundary>

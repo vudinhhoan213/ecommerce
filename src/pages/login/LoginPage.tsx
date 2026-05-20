@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate, Navigate, useSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { loginUser } from "../../store/authThunk";
@@ -12,6 +12,9 @@ const LoginPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
+  const [searchParams] = useSearchParams();
+  const returnUrl = searchParams.get("returnUrl") || "/shop";
+
   const { isAuthenticated, loading, loginLoading, loginError } = useSelector(
     (state: RootState) => state.auth,
   );
@@ -21,7 +24,7 @@ const LoginPage: React.FC = () => {
   }, [dispatch]);
 
   if (loading) return null;
-  if (isAuthenticated) return <Navigate to="/shop" replace />;
+  if (isAuthenticated) return <Navigate to={returnUrl} replace />;
 
   const handleLoginSubmit = async (values: {
     username: string;
@@ -32,7 +35,7 @@ const LoginPage: React.FC = () => {
     );
     if (loginUser.fulfilled.match(result)) {
       message.success(t("auth.loginSuccess"));
-      navigate("/shop");
+      navigate(returnUrl);
     }
   };
 

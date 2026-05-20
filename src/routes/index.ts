@@ -6,12 +6,25 @@ import ProfilePage from "../pages/profile/ProfilePage";
 import MainLayout from "../components/layout/MainLayout";
 import type { RouteConfig } from "../types";
 
+// Routes xem tự do — không cần đăng nhập
 export const publicRoutes: RouteConfig[] = [
   { path: "/", component: LoginPage, layout: null, category: "Login" },
   { path: "/shop", component: ShopPage, layout: MainLayout, category: "Shop" },
-  { path: "/shop/:productId", component: ProductDetailPage, layout: MainLayout, category: "Shop / Product" },
-  { path: "/cart", component: CartPage, layout: MainLayout, category: "Cart" },
-  { path: "/profile", component: ProfilePage, layout: MainLayout, category: "My Profile" },
+  {
+    path: "/shop/:productId",
+    component: ProductDetailPage,
+    layout: MainLayout,
+    category: "Shop / Product",
+  },
 ];
 
-export const privateRoutes: RouteConfig[] = [];
+// Routes yêu cầu đăng nhập — redirect về /login nếu chưa auth
+export const protectedRoutes: RouteConfig[] = [
+  { path: "/cart", component: CartPage, layout: MainLayout, category: "Cart" },
+  {
+    path: "/profile",
+    component: ProfilePage,
+    layout: MainLayout,
+    category: "My Profile",
+  },
+];

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
@@ -15,9 +15,21 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { userData } = useSelector((state: RootState) => state.auth);
+  const { userData, isAuthenticated } = useSelector((state: RootState) => state.auth);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showLogout, setShowLogout] = useState(false);
+  const avatarRef = useRef<HTMLDivElement>(null);
+
+  // Click Outside → đóng logout dropdown
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (avatarRef.current && !avatarRef.current.contains(e.target as Node)) {
+        setShowLogout(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -42,32 +54,43 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           <h1>{t("layout.appName")}</h1>
         </div>
         <div className={styles.headerRight}>
-          <span className={styles.greeting}>
-            {t("auth.greeting")},{" "}
-            <strong>
-              {userData?.firstName} {userData?.lastName}
-            </strong>
-          </span>
-          <div
-            className={styles.avatarWrapper}
-            onMouseEnter={() => setShowLogout(true)}
-            onMouseLeave={() => setShowLogout(false)}
-          >
-            <Link to="/profile">
-              <img
-                src={userData?.image || userData?.avatar}
-                alt="Avatar"
-                className={styles.avatar}
-              />
-            </Link>
-            {showLogout && (
-              <div className={styles.logoutDropdown}>
-                <button onClick={handleLogout} className={styles.logoutBtn}>
-                  {t("auth.logout")}
-                </button>
+          {isAuthenticated && userData ? (
+            <>
+              <span className={styles.greeting}>
+                {t("auth.greeting")},{" "}
+                <strong>
+                  {userData.firstName} {userData.lastName}
+                </strong>
+              </span>
+              <div
+                className={styles.avatarWrapper}
+                ref={avatarRef}
+                onClick={() => setShowLogout((prev) => !prev)}
+              >
+                <div style={{ cursor: "pointer" }}>
+                  <img
+                    src={userData.image || userData.avatar}
+                    alt="Avatar"
+                    className={styles.avatar}
+                  />
+                </div>
+                {showLogout && (
+                  <div className={styles.logoutDropdown}>
+                    <button onClick={handleLogout} className={styles.logoutBtn}>
+                      {t("auth.logout")}
+                    </button>
+                    <Link to="/profile" className={styles.logoutBtn} onClick={() => setShowLogout(false)}>
+                      {t("layout.nav.profile")}
+                    </Link>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </>
+          ) : (
+            <Link to="/" className={styles.logoutBtn}>
+              {t("auth.loginButton")}
+            </Link>
+          )}
         </div>
       </header>
 
