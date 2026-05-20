@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { publicRoutes, protectedRoutes } from "./routes";
 import AuthMiddleware from "./middleware/AuthMiddleware";
@@ -24,14 +24,17 @@ const App: React.FC = () => {
     <ErrorBoundary>
       <BrowserRouter>
         <Routes>
-          {/* Public routes — xem tự do, không cần đăng nhập */}
           {publicRoutes.map((route, index) => {
             const Page = route.component;
             const Layout = route.layout ? route.layout : Fragment;
 
             if (route.layout === null) {
               return (
-                <Route key={`pub-${index}`} path={route.path} element={<Page />} />
+                <Route
+                  key={`pub-${index}`}
+                  path={route.path}
+                  element={<Page />}
+                />
               );
             }
 
@@ -48,7 +51,6 @@ const App: React.FC = () => {
             );
           })}
 
-          {/* Protected routes — cần đăng nhập, redirect kèm returnUrl */}
           <Route element={<AuthMiddleware />}>
             {protectedRoutes.map((route, index) => {
               const Page = route.component;
@@ -67,6 +69,8 @@ const App: React.FC = () => {
               );
             })}
           </Route>
+
+          <Route path="*" element={<Navigate to="/shop" replace />} />
         </Routes>
       </BrowserRouter>
     </ErrorBoundary>

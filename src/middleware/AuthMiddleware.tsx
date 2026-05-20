@@ -23,7 +23,7 @@ const AuthMiddleware: React.FC = () => {
     // Redirect về trang login kèm returnUrl để sau login quay lại
     return (
       <Navigate
-        to={`/?returnUrl=${encodeURIComponent(location.pathname + location.search)}`}
+        to={`/login?returnUrl=${encodeURIComponent(location.pathname + location.search)}`}
         replace
       />
     );

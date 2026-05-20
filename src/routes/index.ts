@@ -8,7 +8,7 @@ import type { RouteConfig } from "../types";
 
 // Routes xem tự do — không cần đăng nhập
 export const publicRoutes: RouteConfig[] = [
-  { path: "/", component: LoginPage, layout: null, category: "Login" },
+  { path: "/login", component: LoginPage, layout: null, category: "Login" },
   { path: "/shop", component: ShopPage, layout: MainLayout, category: "Shop" },
   {
     path: "/shop/:productId",

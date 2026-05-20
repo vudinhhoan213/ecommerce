@@ -35,7 +35,7 @@ export function useRequireAuth() {
       const returnUrl = encodeURIComponent(
         location.pathname + location.search,
       );
-      navigate(`/?returnUrl=${returnUrl}`);
+      navigate(`/login?returnUrl=${returnUrl}`);
     }
   };
 

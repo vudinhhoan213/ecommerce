@@ -34,7 +34,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const handleLogout = () => {
     dispatch(logout());
     setShowLogout(false);
-    navigate("/");
+    navigate("/shop");
   };
 
   const MENU_ITEMS = [
@@ -87,7 +87,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               </div>
             </>
           ) : (
-            <Link to="/" className={styles.logoutBtn}>
+            <Link to="/login" className={styles.logoutBtn}>
               {t("auth.loginButton")}
             </Link>
           )}
