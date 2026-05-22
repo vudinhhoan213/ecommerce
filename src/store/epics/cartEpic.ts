@@ -14,7 +14,7 @@ export const cartBatchEpic = (
   const addToCart$ = action$.pipe(ofType(addToCart.type), share());
 
   return addToCart$.pipe(
-    buffer(addToCart$.pipe(debounceTime(1500))),
+    buffer(addToCart$.pipe(debounceTime(500))),
 
     filter((actions) => actions.length > 0),
 

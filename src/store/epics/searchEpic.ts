@@ -1,10 +1,5 @@
 import { ofType } from "redux-observable";
-import {
-  debounceTime,
-  distinctUntilChanged,
-  map,
-  switchMap,
-} from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, switchMap } from "rxjs/operators";
 import { of } from "rxjs";
 import type { Action } from "@reduxjs/toolkit";
 import type { Observable } from "rxjs";
@@ -23,7 +18,7 @@ export const setDebouncedSearch = createAction<string>(
 export const searchEpic = (action$: Observable<Action>): Observable<Action> =>
   action$.pipe(
     ofType(setSearchTerm.type),
-    debounceTime(400),
+    debounceTime(500),
     distinctUntilChanged(
       (prev, curr) =>
         (prev as ReturnType<typeof setSearchTerm>).payload ===

@@ -15,7 +15,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { userData, isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { userData, isAuthenticated } = useSelector(
+    (state: RootState) => state.auth,
+  );
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showLogout, setShowLogout] = useState(false);
   const avatarRef = useRef<HTMLDivElement>(null);
@@ -53,6 +55,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           </Link>
           <h1>{t("layout.appName")}</h1>
         </div>
+
         <div className={styles.headerRight}>
           {isAuthenticated && userData ? (
             <>
@@ -79,7 +82,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     <button onClick={handleLogout} className={styles.logoutBtn}>
                       {t("auth.logout")}
                     </button>
-                    <Link to="/profile" className={styles.logoutBtn} onClick={() => setShowLogout(false)}>
+                    <Link
+                      to="/profile"
+                      className={styles.logoutBtn}
+                      onClick={() => setShowLogout(false)}
+                    >
                       {t("layout.nav.profile")}
                     </Link>
                   </div>
