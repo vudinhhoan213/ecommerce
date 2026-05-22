@@ -10,7 +10,7 @@ import {
   selectTotalItems,
   updateQuantity,
   removeFromCart,
-} from "../../store/cartSlice";
+} from "../../store/cart";
 import { formatVND } from "../../utils/format";
 import styles from "./CartPage.module.css";
 

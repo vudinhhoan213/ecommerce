@@ -23,7 +23,6 @@ import FilterPopover, {
   DEFAULT_FILTER,
   type FilterState,
 } from "../../components/shop/FilterPopover";
-import { useDebounceSearch } from "../../hooks/useDebounceSearch";
 import PageContainer from "../../components/common/PageContainer";
 import Pagination from "../../components/shop/Pagination";
 import {
@@ -31,13 +30,15 @@ import {
   selectFetchLoading,
   selectMutateLoading,
   selectProductError,
-} from "../../store/productSlice";
-import {
+  selectDebouncedSearch,
+  selectSearchTerm,
   fetchProducts,
   createProduct,
   updateProduct,
   deleteProduct,
-} from "../../store/productThunk";
+  clearCurrentProduct,
+} from "../../store/product";
+import { setSearchTerm } from "../../store/epics";
 import type { Product } from "../../types";
 import type { AppDispatch } from "../../store/store";
 import styles from "./ShopPage.module.css";
@@ -54,18 +55,14 @@ const ShopPage: React.FC = () => {
   const fetchLoading = useSelector(selectFetchLoading);
   const mutateLoading = useSelector(selectMutateLoading);
   const error = useSelector(selectProductError);
+  const searchTerm = useSelector(selectSearchTerm);
+  const debouncedSearch = useSelector(selectDebouncedSearch);
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [filter, setFilter] = useState<FilterState>(DEFAULT_FILTER);
   const [filterOpen, setFilterOpen] = useState(false);
-
-  const emitSearch = useDebounceSearch((value) => {
-    setDebouncedSearch(value);
-  }, 500);
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -179,12 +176,10 @@ const ShopPage: React.FC = () => {
       <SearchAutocomplete
         value={searchTerm}
         onChange={(val) => {
-          setSearchTerm(val);
-          emitSearch(val);
+          dispatch(setSearchTerm(val));
         }}
         onSearch={(val) => {
-          setSearchTerm(val);
-          emitSearch(val);
+          dispatch(setSearchTerm(val));
         }}
         onSelectProduct={(id) => navigate(`/shop/${id}`)}
         className={styles.searchInput}

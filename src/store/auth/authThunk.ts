@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { authService } from "../services";
-import type { UserData, LoginCredentials } from "../types";
-import type { AppDispatch } from "./store";
+import { authService } from "../../services";
+import type { UserData, LoginCredentials } from "../../types";
+import type { AppDispatch } from "../store";
 
 export const fetchUserProfile = createAsyncThunk<UserData, string>(
   "auth/fetchUserProfile",

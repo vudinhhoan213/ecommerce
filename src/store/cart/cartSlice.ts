@@ -1,8 +1,5 @@
-import { createSlice, createSelector, type PayloadAction } from "@reduxjs/toolkit";
-import type { CartState, CartItem, Product } from "../types";
-import type { RootState } from "./store";
-
-const TAX_RATE = 0.1;
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import type { CartState, Product } from "../../types";
 
 const initialState: CartState = {
   cartList: [],
@@ -60,27 +57,6 @@ const cartSlice = createSlice({
     },
   },
 });
-
-// Selectors
-export const selectCartList = (state: RootState) => state.cart.cartList;
-
-export const selectTotalItems = (state: RootState) =>
-  state.cart.cartList.reduce(
-    (sum: number, item: CartItem) => sum + item.quantity,
-    0,
-  );
-
-export const selectCartTotals = createSelector(
-  selectCartList,
-  (cartList) => {
-    const subTotal = cartList.reduce(
-      (sum: number, item: CartItem) => sum + item.price * item.quantity,
-      0,
-    );
-    const tax = Math.round(subTotal * TAX_RATE);
-    return { subTotal, tax, total: subTotal + tax };
-  },
-);
 
 export const { addToCart, updateQuantity, removeFromCart, clearCart } =
   cartSlice.actions;

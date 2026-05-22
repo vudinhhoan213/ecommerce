@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { Product } from "../types";
-import type { RootState } from "./store";
+import type { Product } from "../../types";
+import { setSearchTerm, setDebouncedSearch } from "../epics/searchEpic";
 import {
   fetchProducts,
   fetchProductById,
@@ -15,6 +15,8 @@ interface ProductState {
   fetchLoading: boolean;
   mutateLoading: boolean;
   error: string;
+  searchTerm: string;
+  debouncedSearch: string;
 }
 
 const initialState: ProductState = {
@@ -23,6 +25,8 @@ const initialState: ProductState = {
   fetchLoading: false,
   mutateLoading: false,
   error: "",
+  searchTerm: "",
+  debouncedSearch: "",
 };
 
 const productSlice = createSlice({
@@ -38,6 +42,14 @@ const productSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Search epic
+      .addCase(setSearchTerm, (state, action) => {
+        state.searchTerm = action.payload;
+      })
+      .addCase(setDebouncedSearch, (state, action) => {
+        state.debouncedSearch = action.payload;
+      })
+      // Fetch products
       .addCase(fetchProducts.pending, (state) => {
         state.fetchLoading = true;
         state.error = "";
@@ -50,6 +62,7 @@ const productSlice = createSlice({
         state.fetchLoading = false;
         state.error = action.payload as string;
       })
+      // Fetch product by id
       .addCase(fetchProductById.pending, (state) => {
         state.fetchLoading = true;
         state.error = "";
@@ -62,6 +75,7 @@ const productSlice = createSlice({
         state.fetchLoading = false;
         state.error = action.payload as string;
       })
+      // Create
       .addCase(createProduct.pending, (state) => {
         state.mutateLoading = true;
       })
@@ -73,6 +87,7 @@ const productSlice = createSlice({
         state.mutateLoading = false;
         state.error = action.payload as string;
       })
+      // Update
       .addCase(updateProduct.pending, (state) => {
         state.mutateLoading = true;
       })
@@ -92,6 +107,7 @@ const productSlice = createSlice({
         state.mutateLoading = false;
         state.error = action.payload as string;
       })
+      // Delete
       .addCase(deleteProduct.pending, (state) => {
         state.mutateLoading = true;
       })
@@ -105,15 +121,6 @@ const productSlice = createSlice({
       });
   },
 });
-
-export const selectProducts = (state: RootState) => state.product.products;
-export const selectCurrentProduct = (state: RootState) =>
-  state.product.currentProduct;
-export const selectFetchLoading = (state: RootState) =>
-  state.product.fetchLoading;
-export const selectMutateLoading = (state: RootState) =>
-  state.product.mutateLoading;
-export const selectProductError = (state: RootState) => state.product.error;
 
 export const { clearCurrentProduct, clearProductError } = productSlice.actions;
 export default productSlice.reducer;

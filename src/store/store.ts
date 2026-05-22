@@ -1,4 +1,6 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import type { Action } from "@reduxjs/toolkit";
+import { createEpicMiddleware } from "redux-observable";
 import {
   persistStore,
   persistReducer,
@@ -10,9 +12,10 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import authReducer from "./authSlice";
-import cartReducer from "./cartSlice";
-import productReducer from "./productSlice";
+import { authReducer } from "./auth";
+import { cartReducer } from "./cart";
+import { productReducer } from "./product";
+import { rootEpic } from "./epics";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -28,6 +31,10 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
+export type RootState = ReturnType<typeof rootReducer>;
+
+const epicMiddleware = createEpicMiddleware<Action, Action, void>();
+
 const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
@@ -35,12 +42,13 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }),
+    }).concat(epicMiddleware),
 });
+
+epicMiddleware.run(rootEpic);
 
 export const persistor = persistStore(store);
 
-export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = typeof store.dispatch;
 
 export default store;

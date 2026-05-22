@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { logout } from "../../store/authSlice";
+import { logout } from "../../store/auth";
 import { Logo, Cart, Human } from "../../assets";
 import styles from "./MainLayout.module.css";
 import type { RootState } from "../../store/store";

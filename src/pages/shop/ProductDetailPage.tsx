@@ -8,15 +8,14 @@ import RatingStars from "../../components/common/RatingStars";
 import CartIcon from "../../components/common/CartIcon";
 import PageContainer from "../../components/common/PageContainer";
 import { useRequireAuth } from "../../hooks/useRequireAuth";
-import { addToCart } from "../../store/cartSlice";
-import { emitCartAdd } from "../../store/cartEffect$";
-import { fetchProductById } from "../../store/productThunk";
+import { addToCart } from "../../store/cart";
 import {
   selectCurrentProduct,
   selectFetchLoading,
   selectProductError,
+  fetchProductById,
   clearCurrentProduct,
-} from "../../store/productSlice";
+} from "../../store/product";
 import type { AppDispatch } from "../../store/store";
 import styles from "./ProductDetailPage.module.css";
 import { formatVND } from "../../utils/format";
@@ -111,9 +110,8 @@ const ProductDetailPage: React.FC = () => {
       dispatch(addToCart({ product, color: colors[selectedColorIndex] }));
       if (goToCart) {
         navigate("/cart");
-      } else {
-        emitCartAdd(product.title);
       }
+      // Cart batch epic tự lắng nghe addToCart → gom toast
     });
   };
 
