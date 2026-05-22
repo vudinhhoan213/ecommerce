@@ -90,6 +90,9 @@
   margin-top: 8px;
   z-index: 1000;
   animation: fadeIn 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 @keyframes fadeIn {

@@ -3,8 +3,7 @@
   flex-direction: column;
   height: 100%;
   background-color: #fff;
-  overflow-y: auto;
-  scroll-behavior: smooth;
+  overflow: hidden;
 }
 
 /* ===== Page Header ===== */
@@ -12,7 +11,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 28px 32px 20px;
+  padding: 28px 32px 10px;
   border-bottom: 1px solid #eee;
   flex-shrink: 0;
 }
