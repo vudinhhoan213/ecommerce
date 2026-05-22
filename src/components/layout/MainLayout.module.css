@@ -108,6 +108,7 @@
 
 .logoutBtn {
   padding: 6px 14px;
+  text-decoration: none;
   background-color: #fff;
   color: #e53935;
   border: 1px solid #ffcdd2;
@@ -116,12 +117,15 @@
   font-size: 12px;
   font-weight: 500;
   white-space: nowrap;
+  text-align: center;
+  display: block;
   transition: all 0.2s ease;
 }
 
 .logoutBtn:hover {
   background-color: #ffebee;
   border-color: #e53935;
+  transform: scale(1.08);
 }
 
 /* ===== Sub Container ===== */
