@@ -7,4 +7,4 @@ export {
   createProduct,
   updateProduct,
   deleteProduct,
-} from "./productThunk";
+} from "../epics/productEpic";

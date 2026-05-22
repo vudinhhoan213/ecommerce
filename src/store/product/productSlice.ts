@@ -3,11 +3,21 @@ import type { Product } from "../../types";
 import { setSearchTerm, setDebouncedSearch } from "../epics/searchEpic";
 import {
   fetchProducts,
+  fetchProductsSuccess,
+  fetchProductsFailed,
   fetchProductById,
+  fetchProductByIdSuccess,
+  fetchProductByIdFailed,
   createProduct,
+  createProductSuccess,
+  createProductFailed,
   updateProduct,
+  updateProductSuccess,
+  updateProductFailed,
   deleteProduct,
-} from "./productThunk";
+  deleteProductSuccess,
+  deleteProductFailed,
+} from "../epics/productEpic";
 
 interface ProductState {
   products: Product[];
@@ -50,48 +60,48 @@ const productSlice = createSlice({
         state.debouncedSearch = action.payload;
       })
       // Fetch products
-      .addCase(fetchProducts.pending, (state) => {
+      .addCase(fetchProducts, (state) => {
         state.fetchLoading = true;
         state.error = "";
       })
-      .addCase(fetchProducts.fulfilled, (state, action) => {
+      .addCase(fetchProductsSuccess, (state, action) => {
         state.products = action.payload;
         state.fetchLoading = false;
       })
-      .addCase(fetchProducts.rejected, (state, action) => {
+      .addCase(fetchProductsFailed, (state, action) => {
         state.fetchLoading = false;
-        state.error = action.payload as string;
+        state.error = action.payload;
       })
       // Fetch product by id
-      .addCase(fetchProductById.pending, (state) => {
+      .addCase(fetchProductById, (state) => {
         state.fetchLoading = true;
         state.error = "";
       })
-      .addCase(fetchProductById.fulfilled, (state, action) => {
+      .addCase(fetchProductByIdSuccess, (state, action) => {
         state.currentProduct = action.payload;
         state.fetchLoading = false;
       })
-      .addCase(fetchProductById.rejected, (state, action) => {
+      .addCase(fetchProductByIdFailed, (state, action) => {
         state.fetchLoading = false;
-        state.error = action.payload as string;
+        state.error = action.payload;
       })
       // Create
-      .addCase(createProduct.pending, (state) => {
+      .addCase(createProduct, (state) => {
         state.mutateLoading = true;
       })
-      .addCase(createProduct.fulfilled, (state, action) => {
+      .addCase(createProductSuccess, (state, action) => {
         state.products.push(action.payload);
         state.mutateLoading = false;
       })
-      .addCase(createProduct.rejected, (state, action) => {
+      .addCase(createProductFailed, (state, action) => {
         state.mutateLoading = false;
-        state.error = action.payload as string;
+        state.error = action.payload;
       })
       // Update
-      .addCase(updateProduct.pending, (state) => {
+      .addCase(updateProduct, (state) => {
         state.mutateLoading = true;
       })
-      .addCase(updateProduct.fulfilled, (state, action) => {
+      .addCase(updateProductSuccess, (state, action) => {
         const index = state.products.findIndex(
           (p) => p.id === action.payload.id,
         );
@@ -103,21 +113,21 @@ const productSlice = createSlice({
         }
         state.mutateLoading = false;
       })
-      .addCase(updateProduct.rejected, (state, action) => {
+      .addCase(updateProductFailed, (state, action) => {
         state.mutateLoading = false;
-        state.error = action.payload as string;
+        state.error = action.payload;
       })
       // Delete
-      .addCase(deleteProduct.pending, (state) => {
+      .addCase(deleteProduct, (state) => {
         state.mutateLoading = true;
       })
-      .addCase(deleteProduct.fulfilled, (state, action) => {
+      .addCase(deleteProductSuccess, (state, action) => {
         state.products = state.products.filter((p) => p.id !== action.payload);
         state.mutateLoading = false;
       })
-      .addCase(deleteProduct.rejected, (state, action) => {
+      .addCase(deleteProductFailed, (state, action) => {
         state.mutateLoading = false;
-        state.error = action.payload as string;
+        state.error = action.payload;
       });
   },
 });

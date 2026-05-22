@@ -36,7 +36,6 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
-  clearCurrentProduct,
 } from "../../store/product";
 import { setSearchTerm } from "../../store/epics";
 import type { Product } from "../../types";
@@ -115,22 +114,16 @@ const ShopPage: React.FC = () => {
     setEditingProduct(null);
   };
 
-  const handleSaveProduct = async (formData: Partial<Product>) => {
-    try {
-      if (editingProduct) {
-        await dispatch(
-          updateProduct({ id: editingProduct.id, data: formData }),
-        ).unwrap();
-        message.success(t("shop.updateSuccess"));
-      } else {
-        await dispatch(createProduct(formData)).unwrap();
-        message.success(t("shop.addSuccess"));
-      }
-      handleCloseModal();
-    } catch (err) {
-      const errMsg = err instanceof Error ? err.message : String(err);
-      message.error(errMsg || t("shop.saveError"));
+  const handleSaveProduct = (formData: Partial<Product>) => {
+    if (editingProduct) {
+      dispatch(updateProduct({ id: editingProduct.id, data: formData }));
+    } else {
+      dispatch(createProduct(formData));
     }
+    handleCloseModal();
+    message.success(
+      editingProduct ? t("shop.updateSuccess") : t("shop.addSuccess"),
+    );
   };
 
   const handleDeleteProduct = (productId: number) => {
@@ -141,14 +134,9 @@ const ShopPage: React.FC = () => {
       okText: t("common.delete"),
       okType: "danger",
       cancelText: t("common.cancel"),
-      onOk: async () => {
-        try {
-          await dispatch(deleteProduct(productId)).unwrap();
-          message.success(t("shop.deleteSuccess"));
-        } catch (err) {
-          const errMsg = err instanceof Error ? err.message : String(err);
-          message.error(errMsg || t("shop.saveError"));
-        }
+      onOk: () => {
+        dispatch(deleteProduct(productId));
+        message.success(t("shop.deleteSuccess"));
       },
     });
   };

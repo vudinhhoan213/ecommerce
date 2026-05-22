@@ -1,6 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchUserProfile, loginUser } from "./authThunk";
 import type { AuthState } from "../../types";
+import {
+  fetchUserProfile,
+  fetchUserProfileSuccess,
+  fetchUserProfileFailed,
+  loginUser,
+  loginUserSuccess,
+  loginUserFailed,
+} from "../epics/authEpic";
 
 const initialState: AuthState = {
   userData: null,
@@ -25,7 +32,6 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.userData = null;
     },
-
     clearLoginError: (state) => {
       state.loginError = "";
     },
@@ -33,30 +39,30 @@ const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // Fetch profile
-      .addCase(fetchUserProfile.pending, (state) => {
+      .addCase(fetchUserProfile, (state) => {
         state.loading = true;
       })
-      .addCase(fetchUserProfile.fulfilled, (state, action) => {
+      .addCase(fetchUserProfileSuccess, (state, action) => {
         state.userData = action.payload;
         state.isAuthenticated = true;
         state.loading = false;
       })
-      .addCase(fetchUserProfile.rejected, (state) => {
+      .addCase(fetchUserProfileFailed, (state) => {
         state.userData = null;
         state.isAuthenticated = false;
         state.loading = false;
       })
       // Login
-      .addCase(loginUser.pending, (state) => {
+      .addCase(loginUser, (state) => {
         state.loginLoading = true;
         state.loginError = "";
       })
-      .addCase(loginUser.fulfilled, (state) => {
+      .addCase(loginUserSuccess, (state) => {
         state.loginLoading = false;
       })
-      .addCase(loginUser.rejected, (state, action) => {
+      .addCase(loginUserFailed, (state, action) => {
         state.loginLoading = false;
-        state.loginError = action.payload as string;
+        state.loginError = action.payload;
       });
   },
 });

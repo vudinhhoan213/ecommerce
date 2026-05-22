@@ -25,17 +25,12 @@ const LoginPage: React.FC = () => {
   if (loading) return null;
   if (isAuthenticated) return <Navigate to={returnUrl} replace />;
 
-  const handleLoginSubmit = async (values: {
+  const handleLoginSubmit = (values: {
     username: string;
     password: string;
   }) => {
-    const result = await dispatch(
-      loginUser({ username: values.username, password: values.password }),
-    );
-    if (loginUser.fulfilled.match(result)) {
-      message.success(t("auth.loginSuccess"));
-      navigate(returnUrl);
-    }
+    dispatch(loginUser({ username: values.username, password: values.password }));
+    // Epic xử lý login → khi isAuthenticated = true → Navigate redirect tự động
   };
 
   return (
