@@ -2,6 +2,8 @@ import { combineEpics, Epic } from "redux-observable";
 import type { Action } from "@reduxjs/toolkit";
 import { searchEpic } from "./searchEpic";
 import { cartBatchEpic } from "./cartEpic";
+import { searchSuggestEpic } from "./searchSuggestEpic";
+import { initAuthEpic } from "./initAuthEpic";
 import {
   fetchProductsEpic,
   fetchProductByIdEpic,
@@ -12,8 +14,12 @@ import {
 import { fetchUserProfileEpic, loginUserEpic } from "./authEpic";
 
 const rootEpic: Epic<Action, Action, void> = combineEpics(
-  // Search & Cart
+  // App init
+  initAuthEpic,
+  // Search & Suggest
   searchEpic,
+  searchSuggestEpic,
+  // Cart
   cartBatchEpic,
   // Product CRUD
   fetchProductsEpic,

@@ -1,17 +1,18 @@
 import { ofType } from "redux-observable";
-import { from, of } from "rxjs";
+import { of } from "rxjs";
 import { switchMap, map, catchError } from "rxjs/operators";
+import { ajax } from "rxjs/ajax";
 import { createAction } from "@reduxjs/toolkit";
 import type { Action } from "@reduxjs/toolkit";
 import type { Observable } from "rxjs";
-import { productService } from "../../services";
 import type { Product } from "../../types";
 
+const BASE_URL = process.env.REACT_APP_API_BASE_URL || "";
+
 // =============================================
-// ACTIONS — mỗi thunk cũ = 1 trigger + 1 success + 1 failed
+// ACTIONS
 // =============================================
 
-// Fetch all products
 export const fetchProducts = createAction("product/fetchProducts");
 export const fetchProductsSuccess = createAction<Product[]>(
   "product/fetchProductsSuccess",
@@ -20,7 +21,6 @@ export const fetchProductsFailed = createAction<string>(
   "product/fetchProductsFailed",
 );
 
-// Fetch product by id
 export const fetchProductById = createAction<string | number>(
   "product/fetchProductById",
 );
@@ -31,7 +31,6 @@ export const fetchProductByIdFailed = createAction<string>(
   "product/fetchProductByIdFailed",
 );
 
-// Create product
 export const createProduct = createAction<Partial<Product>>(
   "product/createProduct",
 );
@@ -42,10 +41,10 @@ export const createProductFailed = createAction<string>(
   "product/createProductFailed",
 );
 
-// Update product
-export const updateProduct = createAction<{ id: number; data: Partial<Product> }>(
-  "product/updateProduct",
-);
+export const updateProduct = createAction<{
+  id: number;
+  data: Partial<Product>;
+}>("product/updateProduct");
 export const updateProductSuccess = createAction<Product>(
   "product/updateProductSuccess",
 );
@@ -53,7 +52,6 @@ export const updateProductFailed = createAction<string>(
   "product/updateProductFailed",
 );
 
-// Delete product
 export const deleteProduct = createAction<number>("product/deleteProduct");
 export const deleteProductSuccess = createAction<number>(
   "product/deleteProductSuccess",
@@ -61,6 +59,21 @@ export const deleteProductSuccess = createAction<number>(
 export const deleteProductFailed = createAction<string>(
   "product/deleteProductFailed",
 );
+
+// =============================================
+// HELPER
+// =============================================
+
+const getHeaders = () => {
+  const token = localStorage.getItem("accessToken");
+  return {
+    "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+};
+
+const handleError = (err: unknown): string =>
+  err instanceof Error ? err.message : String(err);
 
 // =============================================
 // EPICS
@@ -72,13 +85,12 @@ export const fetchProductsEpic = (
   action$.pipe(
     ofType(fetchProducts.type),
     switchMap(() =>
-      from(productService.getAll()).pipe(
-        map((data) => fetchProductsSuccess(data.products)),
-        catchError((err) => {
-          const msg = err instanceof Error ? err.message : String(err);
-          return of(fetchProductsFailed(msg));
-        }),
-      ),
+      ajax
+        .get<{ products: Product[] }>(`${BASE_URL}/products`, getHeaders())
+        .pipe(
+          map((res) => fetchProductsSuccess(res.response.products)),
+          catchError((err) => of(fetchProductsFailed(handleError(err)))),
+        ),
     ),
   );
 
@@ -89,13 +101,12 @@ export const fetchProductByIdEpic = (
     ofType(fetchProductById.type),
     switchMap((action) => {
       const id = (action as ReturnType<typeof fetchProductById>).payload;
-      return from(productService.getById(id)).pipe(
-        map((product) => fetchProductByIdSuccess(product)),
-        catchError((err) => {
-          const msg = err instanceof Error ? err.message : String(err);
-          return of(fetchProductByIdFailed(msg));
-        }),
-      );
+      return ajax
+        .get<Product>(`${BASE_URL}/products/${id}`, getHeaders())
+        .pipe(
+          map((res) => fetchProductByIdSuccess(res.response)),
+          catchError((err) => of(fetchProductByIdFailed(handleError(err)))),
+        );
     }),
   );
 
@@ -106,13 +117,12 @@ export const createProductEpic = (
     ofType(createProduct.type),
     switchMap((action) => {
       const product = (action as ReturnType<typeof createProduct>).payload;
-      return from(productService.create(product)).pipe(
-        map((created) => createProductSuccess(created)),
-        catchError((err) => {
-          const msg = err instanceof Error ? err.message : String(err);
-          return of(createProductFailed(msg));
-        }),
-      );
+      return ajax
+        .post<Product>(`${BASE_URL}/products/add`, product, getHeaders())
+        .pipe(
+          map((res) => createProductSuccess(res.response)),
+          catchError((err) => of(createProductFailed(handleError(err)))),
+        );
     }),
   );
 
@@ -123,13 +133,12 @@ export const updateProductEpic = (
     ofType(updateProduct.type),
     switchMap((action) => {
       const { id, data } = (action as ReturnType<typeof updateProduct>).payload;
-      return from(productService.update(id, data)).pipe(
-        map((updated) => updateProductSuccess(updated)),
-        catchError((err) => {
-          const msg = err instanceof Error ? err.message : String(err);
-          return of(updateProductFailed(msg));
-        }),
-      );
+      return ajax
+        .put<Product>(`${BASE_URL}/products/${id}`, data, getHeaders())
+        .pipe(
+          map((res) => updateProductSuccess(res.response)),
+          catchError((err) => of(updateProductFailed(handleError(err)))),
+        );
     }),
   );
 
@@ -140,12 +149,11 @@ export const deleteProductEpic = (
     ofType(deleteProduct.type),
     switchMap((action) => {
       const id = (action as ReturnType<typeof deleteProduct>).payload;
-      return from(productService.delete(id)).pipe(
-        map(() => deleteProductSuccess(id)),
-        catchError((err) => {
-          const msg = err instanceof Error ? err.message : String(err);
-          return of(deleteProductFailed(msg));
-        }),
-      );
+      return ajax
+        .delete<Product>(`${BASE_URL}/products/${id}`, getHeaders())
+        .pipe(
+          map(() => deleteProductSuccess(id)),
+          catchError((err) => of(deleteProductFailed(handleError(err)))),
+        );
     }),
   );

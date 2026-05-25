@@ -2,7 +2,12 @@ import React, { useState, useRef, useEffect } from "react";
 import { Input, Spin } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
-import { useProductSearch } from "../../hooks/useProductSearch";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  selectSuggestResults,
+  selectSuggestLoading,
+} from "../../store/product/searchSuggestSlice";
+import { searchSuggest, searchSuggestClear } from "../../store/epics";
 import { formatVND } from "../../utils/format";
 import styles from "./SearchAutocomplete.module.css";
 
@@ -22,7 +27,9 @@ const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({
   className,
 }) => {
   const { t } = useTranslation();
-  const { results, loading, search, clear } = useProductSearch(300);
+  const dispatch = useDispatch();
+  const results = useSelector(selectSuggestResults);
+  const loading = useSelector(selectSuggestLoading);
   const [showDropdown, setShowDropdown] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -44,21 +51,21 @@ const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     onChange(val);
-    search(val);
+    dispatch(searchSuggest(val));
     setShowDropdown(true);
   };
 
   const handleSearch = (val: string) => {
     onSearch(val);
     setShowDropdown(false);
-    clear();
+    dispatch(searchSuggestClear());
   };
 
   const handleSelect = (productId: number, title: string) => {
     onChange(title);
     onSearch(title);
     setShowDropdown(false);
-    clear();
+    dispatch(searchSuggestClear());
     onSelectProduct?.(productId);
   };
 

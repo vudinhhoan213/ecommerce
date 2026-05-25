@@ -2,6 +2,14 @@ export { default as rootEpic } from "./rootEpic";
 export { searchEpic, setSearchTerm, setDebouncedSearch } from "./searchEpic";
 export { cartBatchEpic, cartBatchNotified } from "./cartEpic";
 export {
+  searchSuggestEpic,
+  searchSuggest,
+  searchSuggestSuccess,
+  searchSuggestFailed,
+  searchSuggestClear,
+} from "./searchSuggestEpic";
+export { initAuthEpic, appInit } from "./initAuthEpic";
+export {
   fetchProducts,
   fetchProductsSuccess,
   fetchProductsFailed,

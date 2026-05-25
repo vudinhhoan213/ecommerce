@@ -15,12 +15,14 @@ import storage from "redux-persist/lib/storage";
 import { authReducer } from "./auth";
 import { cartReducer } from "./cart";
 import { productReducer } from "./product";
+import searchSuggestReducer from "./product/searchSuggestSlice";
 import { rootEpic } from "./epics";
 
 const rootReducer = combineReducers({
   auth: authReducer,
   cart: cartReducer,
   product: productReducer,
+  searchSuggest: searchSuggestReducer,
 });
 
 const persistConfig = {

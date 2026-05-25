@@ -4,19 +4,14 @@ import { useDispatch } from "react-redux";
 import { publicRoutes, protectedRoutes } from "./routes";
 import AuthMiddleware from "./middleware/AuthMiddleware";
 import ErrorBoundary from "./components/common/ErrorBoundary";
-import { fetchUserProfile, setUnauthenticated } from "./store/auth";
+import { appInit } from "./store/epics";
 import type { AppDispatch } from "./store/store";
 
 const App: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    if (token) {
-      dispatch(fetchUserProfile(token));
-    } else {
-      dispatch(setUnauthenticated());
-    }
+    dispatch(appInit());
   }, [dispatch]);
 
   return (
