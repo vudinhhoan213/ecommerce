@@ -8,7 +8,6 @@
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
-    "@testing-library/user-event": "^13.5.0",
     "@types/react-router-dom": "^5.3.3",
     "antd": "^6.3.7",
     "i18next": "^24.2.3",
@@ -21,13 +20,13 @@
     "react-scripts": "5.0.1",
     "redux-observable": "^3.0.0-rc.3",
     "redux-persist": "^6.0.0",
-    "redux-observable": "^3.0.1",
-    "rxjs": "^7.8.1",
     "rxjs": "^7.8.2",
     "typescript": "^5.9.3",
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3"
   },
@@ -53,6 +52,19 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(css|less|scss)$": "<rootDir>/src/__mocks__/styleMock.ts",
+      "\\.(jpg|jpeg|png|gif|svg|webp)$": "<rootDir>/src/__mocks__/fileMock.ts",
+      "^react-router-dom$": "<rootDir>/node_modules/react-router-dom/dist/index.js",
+      "^react-router$": "<rootDir>/node_modules/react-router/dist/development/index.js",
+      "^react-router/dom$": "<rootDir>/node_modules/react-router/dist/development/dom-export.js",
+      "^react-router/internal$": "<rootDir>/node_modules/react-router/dist/development/index.js"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(@ant-design|antd|rc-.*|@rc-component|react-router|react-router-dom)/)"
     ]
   }
 }

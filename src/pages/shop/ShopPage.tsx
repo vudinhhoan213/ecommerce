@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
@@ -13,6 +13,8 @@ import {
 import {
   FilterOutlined,
   PlusOutlined,
+  LeftOutlined,
+  RightOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
@@ -104,11 +106,36 @@ const ShopPage: React.FC = () => {
     }
   }, [products.length, totalPages, currentPage]);
 
+  const handlePageChange = useCallback(
+    (page: number) => {
+      if (page >= 1 && page <= totalPages) {
+        setCurrentPage(page);
+      }
+    },
+    [totalPages],
+  );
+
+  // Keyboard navigation: Arrow Left/Right để chuyển trang
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement).tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+
+      if (e.key === "ArrowLeft" && currentPage > 1) {
+        handlePageChange(currentPage - 1);
+      } else if (e.key === "ArrowRight" && currentPage < totalPages) {
+        handlePageChange(currentPage + 1);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [currentPage, totalPages, handlePageChange]);
+
   const handleOpenModal = (product: Product | null = null) => {
     setEditingProduct(product);
     setShowModal(true);
   };
-
   const handleCloseModal = () => {
     setShowModal(false);
     setEditingProduct(null);
@@ -139,13 +166,6 @@ const ShopPage: React.FC = () => {
         message.success(t("shop.deleteSuccess"));
       },
     });
-  };
-
-  const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
   };
 
   const renderSkeletons = () => (
@@ -216,6 +236,28 @@ const ShopPage: React.FC = () => {
         </p>
       ) : (
         <>
+          {/* Page Navigation Arrows - sticky trong vùng content */}
+          {totalPages > 1 && (
+            <div className={styles.pageArrowContainer}>
+              <button
+                type="button"
+                className={`${styles.pageArrow} ${styles.pageArrowLeft}`}
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                <LeftOutlined />
+              </button>
+              <button
+                type="button"
+                className={`${styles.pageArrow} ${styles.pageArrowRight}`}
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                <RightOutlined />
+              </button>
+            </div>
+          )}
+
           <div className={styles.productGrid}>
             {paginatedProducts.map((product) => (
               <ProductCard
