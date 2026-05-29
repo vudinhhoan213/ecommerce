@@ -20,7 +20,6 @@ const AuthMiddleware: React.FC = () => {
   }
 
   if (!isAuthenticated) {
-    // Redirect về trang login kèm returnUrl để sau login quay lại
     return (
       <Navigate
         to={`/login?returnUrl=${encodeURIComponent(location.pathname + location.search)}`}

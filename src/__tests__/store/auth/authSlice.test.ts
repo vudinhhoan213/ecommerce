@@ -2,7 +2,7 @@ import authReducer, {
   logout,
   setUnauthenticated,
   clearLoginError,
-} from "./authSlice";
+} from "../../../store/auth/authSlice";
 import {
   fetchUserProfile,
   fetchUserProfileSuccess,
@@ -10,8 +10,8 @@ import {
   loginUser,
   loginUserSuccess,
   loginUserFailed,
-} from "../epics/authEpic";
-import type { AuthState, UserData } from "../../types";
+} from "../../../store/auth/authSlice";
+import type { AuthState, UserData } from "../../../types";
 
 // ===== MOCK DATA =====
 const mockUserData: UserData = {

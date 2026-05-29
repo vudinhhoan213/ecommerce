@@ -5,6 +5,7 @@ interface PageContainerProps {
   title?: React.ReactNode;
   subtitle?: string;
   headerRight?: React.ReactNode;
+  footer?: React.ReactNode;
   children: React.ReactNode;
 }
 
@@ -12,6 +13,7 @@ const PageContainer: React.FC<PageContainerProps> = ({
   title,
   subtitle,
   headerRight,
+  footer,
   children,
 }) => {
   const showHeader = title || headerRight;
@@ -30,6 +32,7 @@ const PageContainer: React.FC<PageContainerProps> = ({
         </div>
       )}
       <div className={styles.content}>{children}</div>
+      {footer && <div className={styles.footer}>{footer}</div>}
     </div>
   );
 };

@@ -2,15 +2,17 @@ import { TestScheduler } from "rxjs/testing";
 import { of, throwError } from "rxjs";
 import { ajax } from "rxjs/ajax";
 import {
+  fetchUserProfileEpic,
+  loginUserEpic,
+} from "../../../store/epics/authEpic";
+import {
   fetchUserProfile,
   fetchUserProfileSuccess,
   fetchUserProfileFailed,
-  fetchUserProfileEpic,
   loginUser,
   loginUserSuccess,
   loginUserFailed,
-  loginUserEpic,
-} from "./authEpic";
+} from "../../../store/auth/authSlice";
 
 // ===== MOCK rxjs/ajax =====
 jest.mock("rxjs/ajax", () => ({

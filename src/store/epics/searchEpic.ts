@@ -3,15 +3,7 @@ import { debounceTime, distinctUntilChanged, switchMap } from "rxjs/operators";
 import { of } from "rxjs";
 import type { Action } from "@reduxjs/toolkit";
 import type { Observable } from "rxjs";
-import { createAction } from "@reduxjs/toolkit";
-
-// === ACTION CREATORS ===
-
-export const setSearchTerm = createAction<string>("product/setSearchTerm");
-
-export const setDebouncedSearch = createAction<string>(
-  "product/setDebouncedSearch",
-);
+import { setSearchTerm, setDebouncedSearch } from "../product/productSlice";
 
 // === EPIC ===
 

@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { slugify } from "../../utils/slugify";
 import { useTranslation } from "react-i18next";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import RatingStars from "../common/RatingStars";
@@ -36,7 +37,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   return (
     <div className={styles.productCardWrapper}>
-      <Link to={`/shop/${product.id}`} className={styles.productCard}>
+      <Link to={`/shop/${slugify(product.title)}`} className={styles.productCard}>
         <img
           src={product.thumbnail || product.images?.[0]}
           alt={product.title}

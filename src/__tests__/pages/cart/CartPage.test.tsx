@@ -4,8 +4,8 @@ import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
 import { configureStore } from "@reduxjs/toolkit";
-import cartReducer from "../../store/cart/cartSlice";
-import CartPage from "./CartPage";
+import cartReducer from "../../../store/cart/cartSlice";
+import CartPage from "../../../pages/cart/CartPage";
 
 // ===== MOCK: i18next =====
 jest.mock("react-i18next", () => ({

@@ -9,13 +9,14 @@ import {
 } from "../../store/product/searchSuggestSlice";
 import { searchSuggest, searchSuggestClear } from "../../store/epics";
 import { formatVND } from "../../utils/format";
+import { slugify } from "../../utils/slugify";
 import styles from "./SearchAutocomplete.module.css";
 
 interface SearchAutocompleteProps {
   value: string;
   onChange: (value: string) => void;
   onSearch: (value: string) => void;
-  onSelectProduct?: (productId: number) => void;
+  onSelectProduct?: (slug: string) => void;
   className?: string;
 }
 
@@ -33,7 +34,6 @@ const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({
   const [showDropdown, setShowDropdown] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Click Outside → đóng dropdown
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -61,12 +61,12 @@ const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({
     dispatch(searchSuggestClear());
   };
 
-  const handleSelect = (productId: number, title: string) => {
+  const handleSelect = (title: string) => {
     onChange(title);
     onSearch(title);
     setShowDropdown(false);
     dispatch(searchSuggestClear());
-    onSelectProduct?.(productId);
+    onSelectProduct?.(slugify(title));
   };
 
   return (
@@ -95,7 +95,7 @@ const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({
             <div
               key={product.id}
               className={styles.item}
-              onMouseDown={() => handleSelect(product.id, product.title)}
+              onMouseDown={() => handleSelect(product.title)}
             >
               <img
                 src={product.thumbnail}

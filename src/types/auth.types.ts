@@ -11,7 +11,13 @@ export interface ApiUserData {
   company?: { address?: { address: string } };
 }
 
-export interface UserData extends ApiUserData {
+export interface UserData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  image: string;
+  gender: string;
   name: string;
   avatar: string;
   dob: string;

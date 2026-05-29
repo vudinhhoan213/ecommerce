@@ -1,5 +1,5 @@
-import { selectCartList, selectTotalItems, selectCartTotals } from "./cartSelectors";
-import type { RootState } from "../store";
+import { selectCartList, selectTotalItems, selectCartTotals } from "../../../store/cart/cartSelectors";
+import type { RootState } from "../../store";
 
 // ===== HELPER: Tạo mock RootState =====
 const createMockState = (cartList: any[] = []): RootState =>

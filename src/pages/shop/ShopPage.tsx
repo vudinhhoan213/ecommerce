@@ -1,20 +1,10 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {
-  Button,
-  Space,
-  Modal,
-  message,
-  Skeleton,
-  Card,
-  Popover,
-} from "antd";
+import { Button, Space, Modal, message, Skeleton, Card, Popover } from "antd";
 import {
   FilterOutlined,
   PlusOutlined,
-  LeftOutlined,
-  RightOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
@@ -115,7 +105,6 @@ const ShopPage: React.FC = () => {
     [totalPages],
   );
 
-  // Keyboard navigation: Arrow Left/Right để chuyển trang
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement).tagName;
@@ -189,7 +178,7 @@ const ShopPage: React.FC = () => {
         onSearch={(val) => {
           dispatch(setSearchTerm(val));
         }}
-        onSelectProduct={(id) => navigate(`/shop/${id}`)}
+        onSelectProduct={(slug) => navigate(`/shop/${slug}`)}
         className={styles.searchInput}
       />
       <Popover
@@ -223,7 +212,19 @@ const ShopPage: React.FC = () => {
   );
 
   return (
-    <PageContainer title={t("shop.title")} headerRight={headerActions}>
+    <PageContainer
+      title={t("shop.title")}
+      headerRight={headerActions}
+      footer={
+        totalPages > 1 ? (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        ) : undefined
+      }
+    >
       {fetchLoading ? (
         renderSkeletons()
       ) : error ? (
@@ -236,28 +237,6 @@ const ShopPage: React.FC = () => {
         </p>
       ) : (
         <>
-          {/* Page Navigation Arrows - sticky trong vùng content */}
-          {totalPages > 1 && (
-            <div className={styles.pageArrowContainer}>
-              <button
-                type="button"
-                className={`${styles.pageArrow} ${styles.pageArrowLeft}`}
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
-                <LeftOutlined />
-              </button>
-              <button
-                type="button"
-                className={`${styles.pageArrow} ${styles.pageArrowRight}`}
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-              >
-                <RightOutlined />
-              </button>
-            </div>
-          )}
-
           <div className={styles.productGrid}>
             {paginatedProducts.map((product) => (
               <ProductCard
@@ -270,11 +249,6 @@ const ShopPage: React.FC = () => {
               />
             ))}
           </div>
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
         </>
       )}
 

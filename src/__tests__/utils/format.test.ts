@@ -1,4 +1,4 @@
-import { formatVND } from "./format";
+import { formatVND } from "../../utils/format";
 
 // ============================================================
 // TEST SUITE: formatVND utility function

@@ -1,28 +1,30 @@
 import { of, throwError } from "rxjs";
 import { ajax } from "rxjs/ajax";
 import {
+  fetchProductsEpic,
+  fetchProductByIdEpic,
+  createProductEpic,
+  updateProductEpic,
+  deleteProductEpic,
+} from "../../../store/epics/productEpic";
+import {
   fetchProducts,
   fetchProductsSuccess,
   fetchProductsFailed,
-  fetchProductsEpic,
   fetchProductById,
   fetchProductByIdSuccess,
   fetchProductByIdFailed,
-  fetchProductByIdEpic,
   createProduct,
   createProductSuccess,
   createProductFailed,
-  createProductEpic,
   updateProduct,
   updateProductSuccess,
   updateProductFailed,
-  updateProductEpic,
   deleteProduct,
   deleteProductSuccess,
   deleteProductFailed,
-  deleteProductEpic,
-} from "./productEpic";
-import type { Product } from "../../types";
+} from "../../../store/product/productSlice";
+import type { Product } from "../../../types";
 
 // ===== MOCK rxjs/ajax =====
 jest.mock("rxjs/ajax", () => ({

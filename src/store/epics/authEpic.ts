@@ -2,28 +2,21 @@ import { ofType } from "redux-observable";
 import { of } from "rxjs";
 import { switchMap, map, catchError } from "rxjs/operators";
 import { ajax } from "rxjs/ajax";
-import { createAction } from "@reduxjs/toolkit";
 import type { Action } from "@reduxjs/toolkit";
 import type { Observable } from "rxjs";
-import type { UserData, LoginCredentials, ApiUserData } from "../../types";
+import type { ApiUserData } from "../../types";
+import i18n from "../../i18n";
+import { mapUserProfile } from "../../mappers";
+import {
+  fetchUserProfile,
+  fetchUserProfileSuccess,
+  fetchUserProfileFailed,
+  loginUser,
+  loginUserSuccess,
+  loginUserFailed,
+} from "../auth/authSlice";
 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL || "";
-
-// =============================================
-// ACTIONS
-// =============================================
-
-export const fetchUserProfile = createAction<string>("auth/fetchUserProfile");
-export const fetchUserProfileSuccess = createAction<UserData>(
-  "auth/fetchUserProfileSuccess",
-);
-export const fetchUserProfileFailed = createAction<string>(
-  "auth/fetchUserProfileFailed",
-);
-
-export const loginUser = createAction<LoginCredentials>("auth/loginUser");
-export const loginUserSuccess = createAction<string>("auth/loginUserSuccess");
-export const loginUserFailed = createAction<string>("auth/loginUserFailed");
 
 // =============================================
 // HELPER
@@ -49,17 +42,7 @@ export const fetchUserProfileEpic = (
           Authorization: `Bearer ${token}`,
         })
         .pipe(
-          map((res) => {
-            const data = res.response;
-            return fetchUserProfileSuccess({
-              ...data,
-              name: `${data.firstName} ${data.lastName}`,
-              avatar: data.image,
-              dob: data.birthDate || "N/A",
-              companyAddress: data.company?.address?.address || "N/A",
-              homeAddress: data.address?.address || "N/A",
-            } as UserData);
-          }),
+          map((res) => fetchUserProfileSuccess(mapUserProfile(res.response))),
           catchError((err) => of(fetchUserProfileFailed(handleError(err)))),
         );
     }),
@@ -86,7 +69,7 @@ export const loginUserEpic = (
           switchMap((res) => {
             const token = res.response.accessToken || res.response.token;
             if (!token) {
-              return of(loginUserFailed("Không nhận được token"));
+              return of(loginUserFailed(i18n.t("error.noToken")));
             }
             localStorage.setItem("accessToken", token);
             return of(loginUserSuccess(token), fetchUserProfile(token));

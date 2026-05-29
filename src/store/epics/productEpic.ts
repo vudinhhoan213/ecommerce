@@ -2,63 +2,29 @@ import { ofType } from "redux-observable";
 import { of } from "rxjs";
 import { switchMap, map, catchError } from "rxjs/operators";
 import { ajax } from "rxjs/ajax";
-import { createAction } from "@reduxjs/toolkit";
 import type { Action } from "@reduxjs/toolkit";
 import type { Observable } from "rxjs";
 import type { Product } from "../../types";
+import { mapProduct, mapProducts } from "../../mappers";
+import {
+  fetchProducts,
+  fetchProductsSuccess,
+  fetchProductsFailed,
+  fetchProductById,
+  fetchProductByIdSuccess,
+  fetchProductByIdFailed,
+  createProduct,
+  createProductSuccess,
+  createProductFailed,
+  updateProduct,
+  updateProductSuccess,
+  updateProductFailed,
+  deleteProduct,
+  deleteProductSuccess,
+  deleteProductFailed,
+} from "../product/productSlice";
 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL || "";
-
-// =============================================
-// ACTIONS
-// =============================================
-
-export const fetchProducts = createAction("product/fetchProducts");
-export const fetchProductsSuccess = createAction<Product[]>(
-  "product/fetchProductsSuccess",
-);
-export const fetchProductsFailed = createAction<string>(
-  "product/fetchProductsFailed",
-);
-
-export const fetchProductById = createAction<string | number>(
-  "product/fetchProductById",
-);
-export const fetchProductByIdSuccess = createAction<Product>(
-  "product/fetchProductByIdSuccess",
-);
-export const fetchProductByIdFailed = createAction<string>(
-  "product/fetchProductByIdFailed",
-);
-
-export const createProduct = createAction<Partial<Product>>(
-  "product/createProduct",
-);
-export const createProductSuccess = createAction<Product>(
-  "product/createProductSuccess",
-);
-export const createProductFailed = createAction<string>(
-  "product/createProductFailed",
-);
-
-export const updateProduct = createAction<{
-  id: number;
-  data: Partial<Product>;
-}>("product/updateProduct");
-export const updateProductSuccess = createAction<Product>(
-  "product/updateProductSuccess",
-);
-export const updateProductFailed = createAction<string>(
-  "product/updateProductFailed",
-);
-
-export const deleteProduct = createAction<number>("product/deleteProduct");
-export const deleteProductSuccess = createAction<number>(
-  "product/deleteProductSuccess",
-);
-export const deleteProductFailed = createAction<string>(
-  "product/deleteProductFailed",
-);
 
 // =============================================
 // HELPER
@@ -88,7 +54,7 @@ export const fetchProductsEpic = (
       ajax
         .get<{ products: Product[] }>(`${BASE_URL}/products`, getHeaders())
         .pipe(
-          map((res) => fetchProductsSuccess(res.response.products)),
+          map((res) => fetchProductsSuccess(mapProducts(res.response.products))),
           catchError((err) => of(fetchProductsFailed(handleError(err)))),
         ),
     ),
@@ -104,7 +70,7 @@ export const fetchProductByIdEpic = (
       return ajax
         .get<Product>(`${BASE_URL}/products/${id}`, getHeaders())
         .pipe(
-          map((res) => fetchProductByIdSuccess(res.response)),
+          map((res) => fetchProductByIdSuccess(mapProduct(res.response))),
           catchError((err) => of(fetchProductByIdFailed(handleError(err)))),
         );
     }),
@@ -120,7 +86,7 @@ export const createProductEpic = (
       return ajax
         .post<Product>(`${BASE_URL}/products/add`, product, getHeaders())
         .pipe(
-          map((res) => createProductSuccess(res.response)),
+          map((res) => createProductSuccess(mapProduct(res.response))),
           catchError((err) => of(createProductFailed(handleError(err)))),
         );
     }),
@@ -136,7 +102,7 @@ export const updateProductEpic = (
       return ajax
         .put<Product>(`${BASE_URL}/products/${id}`, data, getHeaders())
         .pipe(
-          map((res) => updateProductSuccess(res.response)),
+          map((res) => updateProductSuccess(mapProduct(res.response))),
           catchError((err) => of(updateProductFailed(handleError(err)))),
         );
     }),

@@ -1,12 +1,16 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
-import {
-  searchSuggest,
-  searchSuggestSuccess,
-  searchSuggestFailed,
-  searchSuggestClear,
-  type SuggestResult,
-} from "../epics/searchSuggestEpic";
+
+// =============================================
+// TYPES
+// =============================================
+
+export interface SuggestResult {
+  id: number;
+  title: string;
+  thumbnail: string;
+  price: number;
+}
 
 interface SearchSuggestState {
   results: SuggestResult[];
@@ -20,33 +24,42 @@ const initialState: SearchSuggestState = {
   error: "",
 };
 
+// =============================================
+// SLICE
+// =============================================
+
 const searchSuggestSlice = createSlice({
   name: "searchSuggest",
   initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(searchSuggest, (state, action) => {
-        if (action.payload.trim()) {
-          state.loading = true;
-          state.error = "";
-        }
-      })
-      .addCase(searchSuggestSuccess, (state, action) => {
-        state.results = action.payload;
-        state.loading = false;
-      })
-      .addCase(searchSuggestFailed, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      .addCase(searchSuggestClear, (state) => {
-        state.results = [];
-        state.loading = false;
+  reducers: {
+    searchSuggest: (state, action: PayloadAction<string>) => {
+      if (action.payload.trim()) {
+        state.loading = true;
         state.error = "";
-      });
+      }
+    },
+    searchSuggestSuccess: (state, action: PayloadAction<SuggestResult[]>) => {
+      state.results = action.payload;
+      state.loading = false;
+    },
+    searchSuggestFailed: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    searchSuggestClear: (state) => {
+      state.results = [];
+      state.loading = false;
+      state.error = "";
+    },
   },
 });
+
+export const {
+  searchSuggest,
+  searchSuggestSuccess,
+  searchSuggestFailed,
+  searchSuggestClear,
+} = searchSuggestSlice.actions;
 
 // Selectors
 export const selectSuggestResults = (state: RootState) =>

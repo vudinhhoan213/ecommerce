@@ -1,15 +1,14 @@
 import React, { useEffect } from "react";
-import { useNavigate, Navigate, useSearchParams } from "react-router-dom";
+import { Navigate, useSearchParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { loginUser, clearLoginError } from "../../store/auth";
 import type { RootState, AppDispatch } from "../../store/store";
 import styles from "./LoginPage.module.css";
-import { Button, Form, Input, message, Alert } from "antd";
+import { Button, Form, Input, Alert } from "antd";
 
 const LoginPage: React.FC = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const [searchParams] = useSearchParams();
   const returnUrl = searchParams.get("returnUrl") || "/shop";
@@ -29,8 +28,9 @@ const LoginPage: React.FC = () => {
     username: string;
     password: string;
   }) => {
-    dispatch(loginUser({ username: values.username, password: values.password }));
-    // Epic xử lý login → khi isAuthenticated = true → Navigate redirect tự động
+    dispatch(
+      loginUser({ username: values.username, password: values.password }),
+    );
   };
 
   return (

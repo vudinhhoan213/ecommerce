@@ -1,7 +1,7 @@
 import productReducer, {
   clearCurrentProduct,
   clearProductError,
-} from "./productSlice";
+} from "../../../store/product/productSlice";
 import {
   fetchProducts,
   fetchProductsSuccess,
@@ -18,9 +18,9 @@ import {
   deleteProduct,
   deleteProductSuccess,
   deleteProductFailed,
-} from "../epics/productEpic";
-import { setSearchTerm, setDebouncedSearch } from "../epics/searchEpic";
-import type { Product } from "../../types";
+} from "../../../store/product/productSlice";
+import { setSearchTerm, setDebouncedSearch } from "../../../store/product/productSlice";
+import type { Product } from "../../../types";
 
 // ===== MOCK DATA =====
 const mockProduct: Product = {

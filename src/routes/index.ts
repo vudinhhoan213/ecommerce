@@ -11,7 +11,7 @@ export const publicRoutes: RouteConfig[] = [
   { path: "/login", component: LoginPage, layout: null, category: "Login" },
   { path: "/shop", component: ShopPage, layout: MainLayout, category: "Shop" },
   {
-    path: "/shop/:productId",
+    path: "/shop/:slug",
     component: ProductDetailPage,
     layout: MainLayout,
     category: "Shop / Product",

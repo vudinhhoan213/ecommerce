@@ -3,10 +3,8 @@ import { buffer, debounceTime, filter, map, share } from "rxjs/operators";
 import { message } from "antd";
 import type { Action } from "@reduxjs/toolkit";
 import type { Observable } from "rxjs";
-import { createAction } from "@reduxjs/toolkit";
-import { addToCart } from "../cart";
-
-export const cartBatchNotified = createAction<number>("cart/batchNotified");
+import i18n from "../../i18n";
+import { addToCart, cartBatchNotified } from "../cart/cartSlice";
 
 export const cartBatchEpic = (
   action$: Observable<Action>,
@@ -24,9 +22,9 @@ export const cartBatchEpic = (
       );
 
       if (items.length === 1) {
-        message.success(`Đã thêm "${items[0]}" vào giỏ hàng`);
+        message.success(i18n.t("cart.addedSingle", { name: items[0] }));
       } else {
-        message.success(`Đã thêm ${items.length} sản phẩm vào giỏ hàng`);
+        message.success(i18n.t("cart.addedMultiple", { count: items.length }));
       }
 
       return cartBatchNotified(items.length);

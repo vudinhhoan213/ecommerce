@@ -64,13 +64,6 @@
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  border: 1px solid #e0e0e0;
-  background-color: #fafafa;
-}
-
-.filterBtn:hover {
-  border-color: #00bee6;
-  color: #00bee6;
 }
 
 .addBtn {
@@ -85,6 +78,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 20px;
+  padding-bottom: 60px;
 }
 
 .productCardWrapper {
@@ -228,8 +222,7 @@
   justify-content: center;
   align-items: center;
   gap: 6px;
-  margin-top: 32px;
-  padding: 16px 0;
+  padding: 12px 24px;
 }
 
 .pageBtn {

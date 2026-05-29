@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import type { CartItem } from "../../types";
 import type { AppDispatch } from "../../store/store";
 import PageContainer from "../../components/common/PageContainer";
+import QuantityControl from "../../components/common/QuantityControl";
 import {
   selectCartList,
   selectCartTotals,
@@ -57,54 +58,39 @@ const CartPage: React.FC = () => {
                 </div>
 
                 <div className={styles.itemActions}>
-                  <div className={styles.qtyController}>
-                    <button
-                      className={styles.qtyBtn}
-                      onClick={() =>
-                        dispatch(
-                          updateQuantity({
-                            productId: item.id,
-                            color: item.selectedColor,
-                            newQuantity: item.quantity + 1,
-                          }),
-                        )
-                      }
-                    >
-                      +
-                    </button>
-                    <input
-                      type="number"
-                      className={styles.qtyInput}
-                      value={item.quantity}
-                      min={1}
-                      onChange={(e) => {
-                        const val = parseInt(e.target.value, 10);
-                        if (!isNaN(val) && val > 0) {
-                          dispatch(
-                            updateQuantity({
-                              productId: item.id,
-                              color: item.selectedColor,
-                              newQuantity: val,
-                            }),
-                          );
-                        }
-                      }}
-                    />
-                    <button
-                      className={styles.qtyBtn}
-                      onClick={() =>
-                        dispatch(
-                          updateQuantity({
-                            productId: item.id,
-                            color: item.selectedColor,
-                            newQuantity: item.quantity - 1,
-                          }),
-                        )
-                      }
-                    >
-                      -
-                    </button>
-                  </div>
+                  <QuantityControl
+                    quantity={item.quantity}
+                    className={styles.qtyController}
+                    btnClassName={styles.qtyBtn}
+                    inputClassName={styles.qtyInput}
+                    onIncrease={() =>
+                      dispatch(
+                        updateQuantity({
+                          productId: item.id,
+                          color: item.selectedColor,
+                          newQuantity: item.quantity + 1,
+                        }),
+                      )
+                    }
+                    onDecrease={() =>
+                      dispatch(
+                        updateQuantity({
+                          productId: item.id,
+                          color: item.selectedColor,
+                          newQuantity: item.quantity - 1,
+                        }),
+                      )
+                    }
+                    onChange={(val) =>
+                      dispatch(
+                        updateQuantity({
+                          productId: item.id,
+                          color: item.selectedColor,
+                          newQuantity: val,
+                        }),
+                      )
+                    }
+                  />
                   <button
                     onClick={() =>
                       dispatch(

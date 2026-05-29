@@ -29,7 +29,7 @@
     "greeting": "Chào"
   },
   "shop": {
-    "title": "Shop",
+    "title": "Cửa hàng",
     "addProduct": "Thêm Sản Phẩm",
     "loadingProducts": "Đang tải sản phẩm...",
     "loadError": "Không tải được danh sách sản phẩm.",
@@ -90,7 +90,9 @@
     "removeItem": "Xóa món",
     "subTotal": "Tạm tính",
     "tax": "Thuế",
-    "total": "Tổng cộng"
+    "total": "Tổng cộng",
+    "addedSingle": "Đã thêm \"{{name}}\" vào giỏ hàng",
+    "addedMultiple": "Đã thêm {{count}} sản phẩm vào giỏ hàng"
   },
   "profile": {
     "title": "Trang cá nhân",
@@ -123,5 +125,12 @@
       "privacy": "Chính sách bảo mật",
       "terms": "Điều khoản sử dụng"
     }
+  },
+  "error": {
+    "boundary": "Đã xảy ra lỗi",
+    "noToken": "Không nhận được token",
+    "searchFailed": "Lỗi tìm kiếm",
+    "subtitle": "Ứng dụng gặp sự cố. Vui lòng thử lại.",
+    "reload": "Tải lại trang"
   }
 }

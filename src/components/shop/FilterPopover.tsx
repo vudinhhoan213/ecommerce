@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Button, Select, Divider } from "antd";
 import { useTranslation } from "react-i18next";
 import { formatVND } from "../../utils/format";
@@ -32,13 +32,16 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
   onReset,
 }) => {
   const { t } = useTranslation();
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const getContainer = () => containerRef.current || document.body;
 
   const updateFilter = (partial: Partial<FilterState>) => {
     onFilterChange({ ...filter, ...partial });
   };
 
   return (
-    <div style={{ width: 280, padding: "8px 0" }}>
+    <div ref={containerRef} style={{ width: 280, padding: "8px 0" }}>
       <h4 style={{ textAlign: "center", margin: "0 0 12px" }}>
         {t("shop.filter.title")}
       </h4>
@@ -59,6 +62,7 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
             value={filter.priceFrom}
             onChange={(val) => updateFilter({ priceFrom: val })}
             style={{ flex: 1 }}
+            getPopupContainer={getContainer}
             options={PRICE_OPTIONS.filter((p) => p <= filter.priceTo).map(
               (p) => ({ value: p, label: formatVND(p) }),
             )}
@@ -77,6 +81,7 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
             value={filter.priceTo}
             onChange={(val) => updateFilter({ priceTo: val })}
             style={{ flex: 1 }}
+            getPopupContainer={getContainer}
             options={PRICE_OPTIONS.filter((p) => p >= filter.priceFrom).map(
               (p) => ({ value: p, label: formatVND(p) }),
             )}
@@ -99,6 +104,7 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
             value={filter.ratingFrom}
             onChange={(val) => updateFilter({ ratingFrom: val })}
             style={{ flex: 1 }}
+            getPopupContainer={getContainer}
             options={RATING_OPTIONS.filter((r) => r <= filter.ratingTo).map(
               (r) => ({
                 value: r,
@@ -120,6 +126,7 @@ const FilterPopover: React.FC<FilterPopoverProps> = ({
             value={filter.ratingTo}
             onChange={(val) => updateFilter({ ratingTo: val })}
             style={{ flex: 1 }}
+            getPopupContainer={getContainer}
             options={RATING_OPTIONS.filter((r) => r >= filter.ratingFrom).map(
               (r) => ({
                 value: r,

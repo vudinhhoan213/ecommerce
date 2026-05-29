@@ -1,10 +1,23 @@
 export { default as productReducer } from "./productSlice";
-export { clearCurrentProduct, clearProductError } from "./productSlice";
-export * from "./productSelectors";
 export {
+  setSearchTerm,
+  setDebouncedSearch,
   fetchProducts,
+  fetchProductsSuccess,
+  fetchProductsFailed,
   fetchProductById,
+  fetchProductByIdSuccess,
+  fetchProductByIdFailed,
   createProduct,
+  createProductSuccess,
+  createProductFailed,
   updateProduct,
+  updateProductSuccess,
+  updateProductFailed,
   deleteProduct,
-} from "../epics/productEpic";
+  deleteProductSuccess,
+  deleteProductFailed,
+  clearCurrentProduct,
+  clearProductError,
+} from "./productSlice";
+export * from "./productSelectors";

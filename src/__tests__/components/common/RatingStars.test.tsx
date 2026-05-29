@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import RatingStars from "./RatingStars";
+import RatingStars from "../../../components/common/RatingStars";
 
 // ===== MOCK: CSS module =====
 jest.mock("./RatingStars.module.css", () => ({

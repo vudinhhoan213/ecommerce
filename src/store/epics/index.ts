@@ -1,15 +1,13 @@
 export { default as rootEpic } from "./rootEpic";
-export { searchEpic, setSearchTerm, setDebouncedSearch } from "./searchEpic";
-export { cartBatchEpic, cartBatchNotified } from "./cartEpic";
-export {
-  searchSuggestEpic,
-  searchSuggest,
-  searchSuggestSuccess,
-  searchSuggestFailed,
-  searchSuggestClear,
-} from "./searchSuggestEpic";
+export { searchEpic } from "./searchEpic";
+export { cartBatchEpic } from "./cartEpic";
+export { searchSuggestEpic } from "./searchSuggestEpic";
 export { initAuthEpic, appInit } from "./initAuthEpic";
+
+// Re-export actions from slices (for backward compatibility)
 export {
+  setSearchTerm,
+  setDebouncedSearch,
   fetchProducts,
   fetchProductsSuccess,
   fetchProductsFailed,
@@ -25,7 +23,8 @@ export {
   deleteProduct,
   deleteProductSuccess,
   deleteProductFailed,
-} from "./productEpic";
+} from "../product/productSlice";
+
 export {
   fetchUserProfile,
   fetchUserProfileSuccess,
@@ -33,4 +32,13 @@ export {
   loginUser,
   loginUserSuccess,
   loginUserFailed,
-} from "./authEpic";
+} from "../auth/authSlice";
+
+export {
+  searchSuggest,
+  searchSuggestSuccess,
+  searchSuggestFailed,
+  searchSuggestClear,
+} from "../product/searchSuggestSlice";
+
+export { cartBatchNotified } from "../cart/cartSlice";

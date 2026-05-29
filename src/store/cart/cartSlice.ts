@@ -1,4 +1,4 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { CartState, Product } from "../../types";
 
 const initialState: CartState = {
@@ -55,9 +55,16 @@ const cartSlice = createSlice({
     clearCart: (state) => {
       state.cartList = [];
     },
+    cartBatchNotified: (state, action: PayloadAction<number>) => {},
   },
 });
 
-export const { addToCart, updateQuantity, removeFromCart, clearCart } =
-  cartSlice.actions;
+export const {
+  addToCart,
+  updateQuantity,
+  removeFromCart,
+  clearCart,
+  cartBatchNotified,
+} = cartSlice.actions;
+
 export default cartSlice.reducer;

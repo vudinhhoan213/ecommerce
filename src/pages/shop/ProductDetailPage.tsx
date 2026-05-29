@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import { slugify } from "../../utils/slugify";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { Spin } from "antd";
@@ -29,7 +30,7 @@ const FALLBACK_IMAGES_BY_COLOR: Record<string, string> = {
 
 const ProductDetailPage: React.FC = () => {
   const { t } = useTranslation();
-  const { productId } = useParams<{ productId: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const requireAuth = useRequireAuth();
@@ -42,18 +43,42 @@ const ProductDetailPage: React.FC = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const defaultColors = useMemo(
-    () => [t("productDetail.colorBlack"), t("productDetail.colorWhite"), t("productDetail.colorBlue")],
+    () => [
+      t("productDetail.colorBlack"),
+      t("productDetail.colorWhite"),
+      t("productDetail.colorBlue"),
+    ],
     [t],
   );
 
   useEffect(() => {
-    if (productId) {
-      dispatch(fetchProductById(productId));
-    }
+    if (!slug) return;
+
+    const findAndFetch = async () => {
+      try {
+        const baseUrl = process.env.REACT_APP_API_BASE_URL || "";
+        const searchTerm = slug.replace(/-/g, " ");
+        const response = await fetch(
+          `${baseUrl}/products/search?q=${encodeURIComponent(searchTerm)}&limit=10`,
+        );
+        const data = await response.json();
+        const matched = data.products?.find(
+          (p: { title: string }) => slugify(p.title) === slug,
+        );
+        if (matched) {
+          dispatch(fetchProductById(matched.id));
+        }
+      } catch {
+        // error handled by epic
+      }
+    };
+
+    findAndFetch();
+
     return () => {
       dispatch(clearCurrentProduct());
     };
-  }, [productId, dispatch]);
+  }, [slug, dispatch]);
 
   const colors = useMemo(
     () => product?.colors ?? defaultColors,
@@ -111,7 +136,6 @@ const ProductDetailPage: React.FC = () => {
       if (goToCart) {
         navigate("/cart");
       }
-      // Cart batch epic tự lắng nghe addToCart → gom toast
     });
   };
 

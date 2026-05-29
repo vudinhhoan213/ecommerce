@@ -1,23 +1,9 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { Product } from "../../types";
-import { setSearchTerm, setDebouncedSearch } from "../epics/searchEpic";
-import {
-  fetchProducts,
-  fetchProductsSuccess,
-  fetchProductsFailed,
-  fetchProductById,
-  fetchProductByIdSuccess,
-  fetchProductByIdFailed,
-  createProduct,
-  createProductSuccess,
-  createProductFailed,
-  updateProduct,
-  updateProductSuccess,
-  updateProductFailed,
-  deleteProduct,
-  deleteProductSuccess,
-  deleteProductFailed,
-} from "../epics/productEpic";
+
+// =============================================
+// STATE
+// =============================================
 
 interface ProductState {
   products: Product[];
@@ -39,10 +25,100 @@ const initialState: ProductState = {
   debouncedSearch: "",
 };
 
+// =============================================
+// SLICE
+// =============================================
+
 const productSlice = createSlice({
   name: "product",
   initialState,
   reducers: {
+    // --- SEARCH ---
+    setSearchTerm: (state, action: PayloadAction<string>) => {
+      state.searchTerm = action.payload;
+    },
+    setDebouncedSearch: (state, action: PayloadAction<string>) => {
+      state.debouncedSearch = action.payload;
+    },
+
+    // --- FETCH PRODUCTS ---
+    fetchProducts: (state) => {
+      state.fetchLoading = true;
+      state.error = "";
+    },
+    fetchProductsSuccess: (state, action: PayloadAction<Product[]>) => {
+      state.products = action.payload;
+      state.fetchLoading = false;
+    },
+    fetchProductsFailed: (state, action: PayloadAction<string>) => {
+      state.fetchLoading = false;
+      state.error = action.payload;
+    },
+
+    // --- FETCH PRODUCT BY ID ---
+    fetchProductById: (state, _action: PayloadAction<string | number>) => {
+      state.fetchLoading = true;
+      state.error = "";
+    },
+    fetchProductByIdSuccess: (state, action: PayloadAction<Product>) => {
+      state.currentProduct = action.payload;
+      state.fetchLoading = false;
+    },
+    fetchProductByIdFailed: (state, action: PayloadAction<string>) => {
+      state.fetchLoading = false;
+      state.error = action.payload;
+    },
+
+    // --- CREATE PRODUCT ---
+    createProduct: (state, _action: PayloadAction<Partial<Product>>) => {
+      state.mutateLoading = true;
+    },
+    createProductSuccess: (state, action: PayloadAction<Product>) => {
+      state.products.push(action.payload);
+      state.mutateLoading = false;
+    },
+    createProductFailed: (state, action: PayloadAction<string>) => {
+      state.mutateLoading = false;
+      state.error = action.payload;
+    },
+
+    // --- UPDATE PRODUCT ---
+    updateProduct: (
+      state,
+      action: PayloadAction<{ id: number; data: Partial<Product> }>,
+    ) => {
+      state.mutateLoading = true;
+    },
+    updateProductSuccess: (state, action: PayloadAction<Product>) => {
+      const updated = action.payload;
+      const index = state.products.findIndex((p) => p.id === updated.id);
+      if (index !== -1) {
+        state.products[index] = { ...state.products[index], ...updated };
+      }
+      if (state.currentProduct?.id === updated.id) {
+        state.currentProduct = { ...state.currentProduct, ...updated };
+      }
+      state.mutateLoading = false;
+    },
+    updateProductFailed: (state, action: PayloadAction<string>) => {
+      state.mutateLoading = false;
+      state.error = action.payload;
+    },
+
+    // --- DELETE PRODUCT ---
+    deleteProduct: (state, _action: PayloadAction<number>) => {
+      state.mutateLoading = true;
+    },
+    deleteProductSuccess: (state, action: PayloadAction<number>) => {
+      state.products = state.products.filter((p) => p.id !== action.payload);
+      state.mutateLoading = false;
+    },
+    deleteProductFailed: (state, action: PayloadAction<string>) => {
+      state.mutateLoading = false;
+      state.error = action.payload;
+    },
+
+    // --- UTILITIES ---
     clearCurrentProduct: (state) => {
       state.currentProduct = null;
     },
@@ -50,87 +126,28 @@ const productSlice = createSlice({
       state.error = "";
     },
   },
-  extraReducers: (builder) => {
-    builder
-      // Search epic
-      .addCase(setSearchTerm, (state, action) => {
-        state.searchTerm = action.payload;
-      })
-      .addCase(setDebouncedSearch, (state, action) => {
-        state.debouncedSearch = action.payload;
-      })
-      // Fetch products
-      .addCase(fetchProducts, (state) => {
-        state.fetchLoading = true;
-        state.error = "";
-      })
-      .addCase(fetchProductsSuccess, (state, action) => {
-        state.products = action.payload;
-        state.fetchLoading = false;
-      })
-      .addCase(fetchProductsFailed, (state, action) => {
-        state.fetchLoading = false;
-        state.error = action.payload;
-      })
-      // Fetch product by id
-      .addCase(fetchProductById, (state) => {
-        state.fetchLoading = true;
-        state.error = "";
-      })
-      .addCase(fetchProductByIdSuccess, (state, action) => {
-        state.currentProduct = action.payload;
-        state.fetchLoading = false;
-      })
-      .addCase(fetchProductByIdFailed, (state, action) => {
-        state.fetchLoading = false;
-        state.error = action.payload;
-      })
-      // Create
-      .addCase(createProduct, (state) => {
-        state.mutateLoading = true;
-      })
-      .addCase(createProductSuccess, (state, action) => {
-        state.products.push(action.payload);
-        state.mutateLoading = false;
-      })
-      .addCase(createProductFailed, (state, action) => {
-        state.mutateLoading = false;
-        state.error = action.payload;
-      })
-      // Update
-      .addCase(updateProduct, (state) => {
-        state.mutateLoading = true;
-      })
-      .addCase(updateProductSuccess, (state, action) => {
-        const index = state.products.findIndex(
-          (p) => p.id === action.payload.id,
-        );
-        if (index !== -1) {
-          state.products[index] = {
-            ...state.products[index],
-            ...action.payload,
-          };
-        }
-        state.mutateLoading = false;
-      })
-      .addCase(updateProductFailed, (state, action) => {
-        state.mutateLoading = false;
-        state.error = action.payload;
-      })
-      // Delete
-      .addCase(deleteProduct, (state) => {
-        state.mutateLoading = true;
-      })
-      .addCase(deleteProductSuccess, (state, action) => {
-        state.products = state.products.filter((p) => p.id !== action.payload);
-        state.mutateLoading = false;
-      })
-      .addCase(deleteProductFailed, (state, action) => {
-        state.mutateLoading = false;
-        state.error = action.payload;
-      });
-  },
 });
 
-export const { clearCurrentProduct, clearProductError } = productSlice.actions;
+export const {
+  setSearchTerm,
+  setDebouncedSearch,
+  fetchProducts,
+  fetchProductsSuccess,
+  fetchProductsFailed,
+  fetchProductById,
+  fetchProductByIdSuccess,
+  fetchProductByIdFailed,
+  createProduct,
+  createProductSuccess,
+  createProductFailed,
+  updateProduct,
+  updateProductSuccess,
+  updateProductFailed,
+  deleteProduct,
+  deleteProductSuccess,
+  deleteProductFailed,
+  clearCurrentProduct,
+  clearProductError,
+} = productSlice.actions;
+
 export default productSlice.reducer;

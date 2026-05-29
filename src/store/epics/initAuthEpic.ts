@@ -3,11 +3,10 @@ import { map } from "rxjs/operators";
 import { createAction } from "@reduxjs/toolkit";
 import type { Action } from "@reduxjs/toolkit";
 import type { Observable } from "rxjs";
-import { fetchUserProfile } from "./authEpic";
-import { setUnauthenticated } from "../auth/authSlice";
+import { fetchUserProfile, setUnauthenticated } from "../auth/authSlice";
 
 // =============================================
-// ACTION
+// ACTION (chỉ còn appInit là action riêng vì không thuộc slice nào)
 // =============================================
 
 export const appInit = createAction("app/init");

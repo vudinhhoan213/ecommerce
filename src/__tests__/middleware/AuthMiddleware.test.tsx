@@ -3,8 +3,8 @@ import { render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "../store/auth/authSlice";
-import AuthMiddleware from "./AuthMiddleware";
+import authReducer from "../../store/auth/authSlice";
+import AuthMiddleware from "../../../middleware/AuthMiddleware";
 
 // ===== MOCK: i18next =====
 jest.mock("react-i18next", () => ({

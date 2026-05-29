@@ -3,8 +3,8 @@ import { render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
 import { configureStore } from "@reduxjs/toolkit";
-import cartReducer from "../../store/cart/cartSlice";
-import CartIcon from "./CartIcon";
+import cartReducer from "../../../store/cart/cartSlice";
+import CartIcon from "../../../components/common/CartIcon";
 
 // ===== HELPER: Render component với Redux + Router =====
 function renderCartIcon(cartList: any[] = []) {

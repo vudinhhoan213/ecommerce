@@ -90,7 +90,9 @@
     "removeItem": "Remove",
     "subTotal": "SubTotal",
     "tax": "Tax",
-    "total": "Total"
+    "total": "Total",
+    "addedSingle": "Added \"{{name}}\" to cart",
+    "addedMultiple": "Added {{count}} products to cart"
   },
   "profile": {
     "title": "My Profile",
@@ -123,5 +125,12 @@
       "privacy": "Privacy Policy",
       "terms": "Terms of Service"
     }
+  },
+  "error": {
+    "boundary": "An error occurred",
+    "noToken": "No token received",
+    "searchFailed": "Search failed",
+    "subtitle": "Something went wrong. Please try again.",
+    "reload": "Reload page"
   }
 }

@@ -3,9 +3,9 @@ import cartReducer, {
   updateQuantity,
   removeFromCart,
   clearCart,
-} from "./cartSlice";
-import type { CartState } from "../../types";
-import type { Product } from "../../types";
+} from "../../../store/cart/cartSlice";
+import type { CartState } from "../../../types";
+import type { Product } from "../../../types";
 
 // ===== MOCK DATA =====
 const mockProduct: Product = {

@@ -8,41 +8,19 @@ import {
   catchError,
 } from "rxjs/operators";
 import { ajax } from "rxjs/ajax";
-import { createAction } from "@reduxjs/toolkit";
 import type { Action } from "@reduxjs/toolkit";
 import type { Observable } from "rxjs";
+import { mapSuggestResults } from "../../mappers";
+import i18n from "../../i18n";
+import {
+  searchSuggest,
+  searchSuggestSuccess,
+  searchSuggestFailed,
+  searchSuggestClear,
+  type SuggestResult,
+} from "../product/searchSuggestSlice";
 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL || "";
-
-// =============================================
-// TYPES
-// =============================================
-
-export interface SuggestResult {
-  id: number;
-  title: string;
-  thumbnail: string;
-  price: number;
-}
-
-// =============================================
-// ACTIONS
-// =============================================
-
-// Input: user gõ vào ô tìm kiếm → gợi ý sản phẩm
-export const searchSuggest = createAction<string>("searchSuggest/search");
-
-// Output: kết quả gợi ý từ API
-export const searchSuggestSuccess = createAction<SuggestResult[]>(
-  "searchSuggest/success",
-);
-
-export const searchSuggestFailed = createAction<string>(
-  "searchSuggest/failed",
-);
-
-// Clear kết quả gợi ý (khi user chọn hoặc đóng dropdown)
-export const searchSuggestClear = createAction("searchSuggest/clear");
 
 // =============================================
 // EPIC
@@ -71,9 +49,9 @@ export const searchSuggestEpic = (
           `${BASE_URL}/products/search?q=${encodeURIComponent(keyword)}&limit=8`,
         )
         .pipe(
-          map((data) => searchSuggestSuccess(data.products)),
+          map((data) => searchSuggestSuccess(mapSuggestResults(data.products))),
           catchError((err) => {
-            const msg = err instanceof Error ? err.message : "Lỗi tìm kiếm";
+            const msg = err instanceof Error ? err.message : i18n.t("error.searchFailed");
             return of(searchSuggestFailed(msg));
           }),
         );
