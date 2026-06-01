@@ -5,10 +5,6 @@ import type { Action } from "@reduxjs/toolkit";
 import type { Observable } from "rxjs";
 import { fetchUserProfile, setUnauthenticated } from "../auth/authSlice";
 
-// =============================================
-// ACTION (chỉ còn appInit là action riêng vì không thuộc slice nào)
-// =============================================
-
 export const appInit = createAction("app/init");
 
 // =============================================

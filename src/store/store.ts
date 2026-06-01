@@ -35,7 +35,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export type RootState = ReturnType<typeof rootReducer>;
 
-const epicMiddleware = createEpicMiddleware<Action, Action, void>();
+const epicMiddleware = createEpicMiddleware<Action, Action, RootState>();
 
 const store = configureStore({
   reducer: persistedReducer,

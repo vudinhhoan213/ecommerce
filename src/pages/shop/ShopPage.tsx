@@ -67,17 +67,14 @@ const ShopPage: React.FC = () => {
 
   const filteredProducts = useMemo(() => {
     return products.filter((product) => {
-      const matchSearch = product.title
-        .toLowerCase()
-        .includes(debouncedSearch.toLowerCase());
       const matchPrice =
         product.price >= filter.priceFrom && product.price <= filter.priceTo;
       const matchRating =
         product.rating >= filter.ratingFrom &&
         product.rating <= filter.ratingTo;
-      return matchSearch && matchPrice && matchRating;
+      return matchPrice && matchRating;
     });
-  }, [products, debouncedSearch, filter]);
+  }, [products, filter]);
 
   const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
   const startIndex = (currentPage - 1) * PRODUCTS_PER_PAGE;

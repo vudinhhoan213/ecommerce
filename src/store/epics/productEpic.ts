@@ -4,10 +4,13 @@ import { switchMap, map, catchError } from "rxjs/operators";
 import { ajax } from "rxjs/ajax";
 import type { Action } from "@reduxjs/toolkit";
 import type { Observable } from "rxjs";
+import type { StateObservable } from "redux-observable";
+import type { RootState } from "../store";
 import type { Product } from "../../types";
 import { mapProduct, mapProducts } from "../../mappers";
 import {
   fetchProducts,
+  setDebouncedSearch,
   fetchProductsSuccess,
   fetchProductsFailed,
   fetchProductById,
@@ -60,6 +63,35 @@ export const fetchProductsEpic = (
     ),
   );
 
+// =============================================
+// SEARCH PRODUCTS EPIC
+// =============================================
+
+export const searchProductsEpic = (
+  action$: Observable<Action>,
+): Observable<Action> =>
+  action$.pipe(
+    ofType(setDebouncedSearch.type),
+    switchMap((action) => {
+      const term = (action as ReturnType<typeof setDebouncedSearch>).payload;
+
+      // Keyword rỗng → fetch lại toàn bộ sản phẩm
+      if (!term.trim()) {
+        return of(fetchProducts());
+      }
+
+      // Keyword có giá trị → gọi API search
+      return ajax
+        .getJSON<{ products: Product[] }>(
+          `${BASE_URL}/products/search?q=${encodeURIComponent(term)}`,
+        )
+        .pipe(
+          map((data) => fetchProductsSuccess(mapProducts(data.products))),
+          catchError((err) => of(fetchProductsFailed(handleError(err)))),
+        );
+    }),
+  );
+
 export const fetchProductByIdEpic = (
   action$: Observable<Action>,
 ): Observable<Action> =>
@@ -94,15 +126,26 @@ export const createProductEpic = (
 
 export const updateProductEpic = (
   action$: Observable<Action>,
+  state$: StateObservable<RootState>,
 ): Observable<Action> =>
   action$.pipe(
     ofType(updateProduct.type),
     switchMap((action) => {
       const { id, data } = (action as ReturnType<typeof updateProduct>).payload;
+
+      // Lấy product đầy đủ từ store làm nền tảng
+      const existing =
+        state$.value.product.products.find((p) => p.id === id) ||
+        state$.value.product.currentProduct;
+
       return ajax
         .put<Product>(`${BASE_URL}/products/${id}`, data, getHeaders())
         .pipe(
-          map((res) => updateProductSuccess(mapProduct(res.response))),
+          map((res) => {
+            // Merge: existing (đầy đủ) + response (partial từ API), rồi chuẩn hóa qua mapProduct
+            const merged = mapProduct({ ...existing, ...res.response } as Product);
+            return updateProductSuccess(merged);
+          }),
           catchError((err) => of(updateProductFailed(handleError(err)))),
         );
     }),
