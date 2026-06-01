@@ -57,7 +57,9 @@ export const fetchProductsEpic = (
       ajax
         .get<{ products: Product[] }>(`${BASE_URL}/products`, getHeaders())
         .pipe(
-          map((res) => fetchProductsSuccess(mapProducts(res.response.products))),
+          map((res) =>
+            fetchProductsSuccess(mapProducts(res.response.products)),
+          ),
           catchError((err) => of(fetchProductsFailed(handleError(err)))),
         ),
     ),
@@ -82,9 +84,9 @@ export const searchProductsEpic = (
 
       // Keyword có giá trị → gọi API search
       return ajax
-        .getJSON<{ products: Product[] }>(
-          `${BASE_URL}/products/search?q=${encodeURIComponent(term)}`,
-        )
+        .getJSON<{
+          products: Product[];
+        }>(`${BASE_URL}/products/search?q=${encodeURIComponent(term)}`)
         .pipe(
           map((data) => fetchProductsSuccess(mapProducts(data.products))),
           catchError((err) => of(fetchProductsFailed(handleError(err)))),
@@ -99,12 +101,10 @@ export const fetchProductByIdEpic = (
     ofType(fetchProductById.type),
     switchMap((action) => {
       const id = (action as ReturnType<typeof fetchProductById>).payload;
-      return ajax
-        .get<Product>(`${BASE_URL}/products/${id}`, getHeaders())
-        .pipe(
-          map((res) => fetchProductByIdSuccess(mapProduct(res.response))),
-          catchError((err) => of(fetchProductByIdFailed(handleError(err)))),
-        );
+      return ajax.get<Product>(`${BASE_URL}/products/${id}`, getHeaders()).pipe(
+        map((res) => fetchProductByIdSuccess(mapProduct(res.response))),
+        catchError((err) => of(fetchProductByIdFailed(handleError(err)))),
+      );
     }),
   );
 
@@ -143,7 +143,10 @@ export const updateProductEpic = (
         .pipe(
           map((res) => {
             // Merge: existing (đầy đủ) + response (partial từ API), rồi chuẩn hóa qua mapProduct
-            const merged = mapProduct({ ...existing, ...res.response } as Product);
+            const merged = mapProduct({
+              ...existing,
+              ...res.response,
+            } as Product);
             return updateProductSuccess(merged);
           }),
           catchError((err) => of(updateProductFailed(handleError(err)))),

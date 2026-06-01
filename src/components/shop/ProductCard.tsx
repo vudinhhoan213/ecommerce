@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import RatingStars from "../common/RatingStars";
 import { addToCart } from "../../store/cart";
+import { useRequireAuth } from "../../hooks/useRequireAuth";
 import styles from "../../pages/shop/ShopPage.module.css";
 import type { Product } from "../../types";
 import type { AppDispatch } from "../../store/store";
@@ -27,12 +28,15 @@ const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const dispatch = useDispatch<AppDispatch>();
   const { t } = useTranslation();
+  const requireAuth = useRequireAuth();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    const defaultColor = product.colors?.[0] || "Default";
-    dispatch(addToCart({ product, color: defaultColor }));
+    requireAuth(() => {
+      const defaultColor = product.colors?.[0] || "Default";
+      dispatch(addToCart({ product, color: defaultColor }));
+    });
   };
 
   return (
