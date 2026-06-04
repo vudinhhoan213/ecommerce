@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 interface QuantityControlProps {
   quantity: number;
@@ -19,7 +19,14 @@ const QuantityControl: React.FC<QuantityControlProps> = ({
   btnClassName,
   inputClassName,
 }) => {
+  const [inputValue, setInputValue] = useState<string>(String(quantity));
+
+  useEffect(() => {
+    setInputValue(String(quantity));
+  }, [quantity]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
     const val = parseInt(e.target.value, 10);
     if (!isNaN(val) && val > 0) {
       onChange(val);
@@ -34,7 +41,7 @@ const QuantityControl: React.FC<QuantityControlProps> = ({
       <input
         type="number"
         className={inputClassName}
-        value={quantity}
+        value={inputValue}
         min={1}
         onChange={handleInputChange}
       />

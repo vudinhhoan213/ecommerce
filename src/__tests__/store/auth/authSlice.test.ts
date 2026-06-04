@@ -15,7 +15,6 @@ import type { AuthState, UserData } from "../../../types";
 
 // ===== MOCK DATA =====
 const mockUserData: UserData = {
-  id: 1,
   firstName: "John",
   lastName: "Doe",
   email: "john@example.com",
@@ -96,7 +95,7 @@ describe("authSlice", () => {
     it("should set user data on fetchUserProfileSuccess", () => {
       const state = authReducer(
         initialState,
-        fetchUserProfileSuccess(mockUserData)
+        fetchUserProfileSuccess(mockUserData),
       );
 
       expect(state.userData).toEqual(mockUserData);
@@ -113,7 +112,7 @@ describe("authSlice", () => {
 
       const state = authReducer(
         loggedInState,
-        fetchUserProfileFailed("Network error")
+        fetchUserProfileFailed("Network error"),
       );
 
       expect(state.userData).toBeNull();
@@ -126,7 +125,7 @@ describe("authSlice", () => {
     it("should set loginLoading=true on loginUser", () => {
       const state = authReducer(
         initialState,
-        loginUser({ username: "test", password: "pass" })
+        loginUser({ username: "test", password: "pass" }),
       );
 
       expect(state.loginLoading).toBe(true);
@@ -152,7 +151,7 @@ describe("authSlice", () => {
 
       const state = authReducer(
         loadingState,
-        loginUserFailed("Invalid username or password")
+        loginUserFailed("Invalid username or password"),
       );
 
       expect(state.loginLoading).toBe(false);
