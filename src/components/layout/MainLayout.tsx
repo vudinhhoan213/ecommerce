@@ -21,6 +21,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showLogout, setShowLogout] = useState(false);
   const avatarRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 576);
 
   // Click Outside → đóng logout dropdown
   useEffect(() => {
@@ -32,6 +33,27 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // Track viewport for mobile sidebar behavior
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth <= 576;
+      setIsMobile(mobile);
+      if (mobile) {
+        setIsCollapsed(true);
+      }
+    };
+    // Set initial state
+    if (window.innerWidth <= 576) {
+      setIsCollapsed(true);
+    }
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const handleNavClick = () => {
+    if (isMobile) setIsCollapsed(true);
+  };
 
   const handleLogout = () => {
     dispatch(logout());
@@ -50,6 +72,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       {/* Header */}
       <header className={styles.header}>
         <div className={styles.headerLeft}>
+          {isMobile && (
+            <button
+              onClick={() => setIsCollapsed(!isCollapsed)}
+              className={styles.hamburgerBtn}
+              aria-label="Toggle menu"
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+          )}
           <Link to="/shop">
             <img src={Logo} alt="Logo" />
           </Link>
@@ -103,6 +136,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
       {/* Sidebar + Content */}
       <div className={styles.subContainer}>
+        {/* Overlay on mobile when sidebar is open */}
+        {isMobile && !isCollapsed && (
+          <div
+            className={styles.overlay}
+            onClick={() => setIsCollapsed(true)}
+          />
+        )}
+
         <aside
           className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ""}`}
         >
@@ -123,6 +164,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 <NavLink
                   to={item.path}
                   className={styles.menuLink}
+                  onClick={handleNavClick}
                   style={({ isActive }) => ({
                     color: isActive ? "#00bee6" : "#000000",
                     fontWeight: isActive ? "bold" : "normal",

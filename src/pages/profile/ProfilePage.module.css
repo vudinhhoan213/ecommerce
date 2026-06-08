@@ -33,16 +33,48 @@
 .infoCard {
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin-top: 16px;
 }
 
-/* Responsive */
+/* ===== RESPONSIVE ===== */
+
+/* --- Tablet (≤ 992px) --- */
+@media (max-width: 992px) {
+  .headerContent {
+    gap: 16px;
+  }
+}
+
+/* --- Mobile (≤ 768px) --- */
 @media (max-width: 768px) {
   .headerContent {
     flex-direction: column;
     text-align: center;
   }
 
-  .container {
-    padding: 16px;
+  .headerText {
+    align-items: center;
+  }
+}
+
+/* --- iPhone (≤ 576px) --- */
+@media (max-width: 576px) {
+  .headerContent {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .headerText {
+    align-items: center;
+  }
+
+  .headerCard,
+  .infoCard {
+    border-radius: 8px;
+  }
+
+  .infoCard {
+    margin-top: 12px;
   }
 }
