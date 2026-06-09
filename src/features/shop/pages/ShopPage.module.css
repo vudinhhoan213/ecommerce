@@ -40,8 +40,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: nowrap;
-  width: 100%;
+  flex-wrap: nowrap !important;
+  max-width: 500px;
 }
 
 .searchInput {
@@ -349,6 +349,10 @@
    ============================================== */
 
 @media (max-width: 768px) {
+  .headerActions {
+    max-width: 100%;
+  }
+
   .productGrid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;

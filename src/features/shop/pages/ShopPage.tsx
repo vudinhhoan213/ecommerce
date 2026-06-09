@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Button, Space, Modal, message, Skeleton, Card, Popover } from "antd";
+import { Button, Modal, message, Skeleton, Card, Popover } from "antd";
 import {
   FilterOutlined,
   PlusOutlined,
@@ -166,7 +166,7 @@ const ShopPage: React.FC = () => {
   );
 
   const headerActions = (
-    <Space wrap align="center">
+    <div className={styles.headerActions}>
       <SearchAutocomplete
         value={searchTerm}
         onChange={(val) => {
@@ -205,7 +205,7 @@ const ShopPage: React.FC = () => {
       >
         {t("shop.addProduct")}
       </Button>
-    </Space>
+    </div>
   );
 
   return (

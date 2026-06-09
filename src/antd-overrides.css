@@ -1,2 +1,16 @@
 /* ===== Ant Design v5 Overrides ===== */
-/* Intentionally empty — using size="large" prop instead */
+/* Import CUỐI CÙNG trong App.tsx để thắng cssinjs */
+
+/* Cho phép Input.Search co nhỏ trong flex container */
+.ant-input-search {
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+.ant-input-search .ant-input-wrapper {
+  min-width: 0 !important;
+}
+
+.ant-input-search .ant-input {
+  min-width: 0 !important;
+}
