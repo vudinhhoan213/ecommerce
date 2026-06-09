@@ -5,6 +5,7 @@ import { publicRoutes, protectedRoutes } from "./config/routes";
 import { AuthMiddleware, appInit } from "./features/auth";
 import ErrorBoundary from "./components/ui/ErrorBoundary";
 import type { AppDispatch } from "./lib/store";
+import "./antd-overrides.css";
 
 const App: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();

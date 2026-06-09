@@ -78,6 +78,7 @@ const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({
         onSearch={handleSearch}
         onFocus={() => results.length > 0 && setShowDropdown(true)}
         enterButton={<SearchOutlined />}
+        size="large"
         className={className}
         allowClear
       />
