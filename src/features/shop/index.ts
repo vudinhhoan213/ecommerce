@@ -1,0 +1,51 @@
+// Public API of Shop feature
+export {
+  // Reducers
+  productReducer,
+  searchSuggestReducer,
+  // Product Actions
+  setSearchTerm,
+  setDebouncedSearch,
+  fetchProducts,
+  fetchProductsSuccess,
+  fetchProductsFailed,
+  fetchProductById,
+  fetchProductByIdSuccess,
+  fetchProductByIdFailed,
+  createProduct,
+  createProductSuccess,
+  createProductFailed,
+  updateProduct,
+  updateProductSuccess,
+  updateProductFailed,
+  deleteProduct,
+  deleteProductSuccess,
+  deleteProductFailed,
+  clearCurrentProduct,
+  clearProductError,
+  // Product Selectors
+  selectProducts,
+  selectCurrentProduct,
+  selectFetchLoading,
+  selectMutateLoading,
+  selectProductError,
+  selectSearchTerm,
+  selectDebouncedSearch,
+  // SearchSuggest Actions
+  searchSuggest,
+  searchSuggestSuccess,
+  searchSuggestFailed,
+  searchSuggestClear,
+  selectSuggestResults,
+  selectSuggestLoading,
+  // Epics
+  fetchProductsEpic,
+  fetchProductByIdEpic,
+  createProductEpic,
+  searchProductsEpic,
+  updateProductEpic,
+  deleteProductEpic,
+  searchEpic,
+  searchSuggestEpic,
+} from "./store";
+export type { SuggestResult } from "./store";

@@ -1,4 +1,4 @@
-import type { SuggestResult } from "../store/product/searchSuggestSlice";
+import type { SuggestResult } from "../features/shop/store/searchSuggestSlice";
 
 // =============================================
 // MAPPERS

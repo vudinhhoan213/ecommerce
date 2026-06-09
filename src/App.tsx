@@ -1,11 +1,10 @@
 import React, { Fragment, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { publicRoutes, protectedRoutes } from "./routes";
-import AuthMiddleware from "./middleware/AuthMiddleware";
-import ErrorBoundary from "./components/common/ErrorBoundary";
-import { appInit } from "./store/epics";
-import type { AppDispatch } from "./store/store";
+import { publicRoutes, protectedRoutes } from "./config/routes";
+import { AuthMiddleware, appInit } from "./features/auth";
+import ErrorBoundary from "./components/ui/ErrorBoundary";
+import type { AppDispatch } from "./lib/store";
 
 const App: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
