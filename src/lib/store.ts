@@ -14,14 +14,18 @@ import {
 import storage from "redux-persist/lib/storage";
 import { authReducer } from "../features/auth";
 import { cartReducer } from "../features/cart";
-import { productReducer, searchSuggestReducer } from "../features/shop";
 import { rootEpic } from "./rootEpic";
+
+// =============================================
+// ROOT REDUCER
+//
+// Chỉ còn Auth + Cart (client state).
+// Shop/Product data giờ do React Query quản lý.
+// =============================================
 
 const rootReducer = combineReducers({
   auth: authReducer,
   cart: cartReducer,
-  product: productReducer,
-  searchSuggest: searchSuggestReducer,
 });
 
 const persistConfig = {

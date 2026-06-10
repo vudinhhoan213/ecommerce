@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Button, Modal, message, Skeleton, Card, Popover } from "antd";
 import {
@@ -18,20 +17,13 @@ import FilterPopover, {
 import PageContainer from "../../../components/ui/PageContainer";
 import Pagination from "../../../components/ui/Pagination";
 import {
-  selectProducts,
-  selectFetchLoading,
-  selectMutateLoading,
-  selectProductError,
-  selectDebouncedSearch,
-  selectSearchTerm,
-  fetchProducts,
-  setSearchTerm,
-  createProduct,
-  updateProduct,
-  deleteProduct,
-} from "../store";
+  useProducts,
+  useSearchProducts,
+  useCreateProduct,
+  useUpdateProduct,
+  useDeleteProduct,
+} from "../hooks";
 import type { Product } from "../../../types";
-import type { AppDispatch } from "../../../lib/store";
 import styles from "./ShopPage.module.css";
 import { formatVND } from "../../../utils/format";
 
@@ -39,15 +31,32 @@ const PRODUCTS_PER_PAGE = 20;
 
 const ShopPage: React.FC = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const products = useSelector(selectProducts);
-  const fetchLoading = useSelector(selectFetchLoading);
-  const mutateLoading = useSelector(selectMutateLoading);
-  const error = useSelector(selectProductError);
-  const searchTerm = useSelector(selectSearchTerm);
-  const debouncedSearch = useSelector(selectDebouncedSearch);
+  // =============================================
+  // REACT QUERY — Server State
+  // =============================================
+
+  const {
+    data: allProducts = [],
+    isLoading: fetchLoading,
+    error: fetchError,
+  } = useProducts();
+
+  // Search: debounce ở client, React Query fetch
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  const { data: searchResults } = useSearchProducts(debouncedSearch);
+
+  // Mutations
+  const createMutation = useCreateProduct();
+  const updateMutation = useUpdateProduct();
+  const deleteMutation = useDeleteProduct();
+
+  // =============================================
+  // LOCAL UI STATE — Client State
+  // =============================================
 
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
@@ -55,9 +64,22 @@ const ShopPage: React.FC = () => {
   const [filter, setFilter] = useState<FilterState>(DEFAULT_FILTER);
   const [filterOpen, setFilterOpen] = useState(false);
 
+  // =============================================
+  // DEBOUNCE SEARCH (500ms)
+  // =============================================
+
   useEffect(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // =============================================
+  // DERIVED STATE
+  // =============================================
+
+  const products = debouncedSearch ? searchResults ?? [] : allProducts;
 
   const isFilterActive =
     filter.priceFrom !== DEFAULT_FILTER.priceFrom ||
@@ -83,6 +105,7 @@ const ShopPage: React.FC = () => {
     startIndex + PRODUCTS_PER_PAGE,
   );
 
+  // Reset page khi search/filter thay đổi
   useEffect(() => {
     setCurrentPage(1);
   }, [debouncedSearch, filter]);
@@ -92,6 +115,10 @@ const ShopPage: React.FC = () => {
       setCurrentPage(totalPages);
     }
   }, [products.length, totalPages, currentPage]);
+
+  // =============================================
+  // HANDLERS
+  // =============================================
 
   const handlePageChange = useCallback(
     (page: number) => {
@@ -129,14 +156,29 @@ const ShopPage: React.FC = () => {
 
   const handleSaveProduct = (formData: Partial<Product>) => {
     if (editingProduct) {
-      dispatch(updateProduct({ id: editingProduct.id, data: formData }));
+      updateMutation.mutate(
+        { id: editingProduct.id, data: formData },
+        {
+          onSuccess: () => {
+            handleCloseModal();
+            message.success(t("shop.updateSuccess"));
+          },
+          onError: (err) => {
+            message.error(`Update failed: ${err.message}`);
+          },
+        },
+      );
     } else {
-      dispatch(createProduct(formData));
+      createMutation.mutate(formData, {
+        onSuccess: () => {
+          handleCloseModal();
+          message.success(t("shop.addSuccess"));
+        },
+        onError: (err) => {
+          message.error(`Create failed: ${err.message}`);
+        },
+      });
     }
-    handleCloseModal();
-    message.success(
-      editingProduct ? t("shop.updateSuccess") : t("shop.addSuccess"),
-    );
   };
 
   const handleDeleteProduct = (productId: number) => {
@@ -148,11 +190,22 @@ const ShopPage: React.FC = () => {
       okType: "danger",
       cancelText: t("common.cancel"),
       onOk: () => {
-        dispatch(deleteProduct(productId));
-        message.success(t("shop.deleteSuccess"));
+        deleteMutation.mutate(productId, {
+          onSuccess: () => message.success(t("shop.deleteSuccess")),
+          onError: (err) => message.error(`Delete failed: ${err.message}`),
+        });
       },
     });
   };
+
+  // =============================================
+  // RENDER
+  // =============================================
+
+  const mutateLoading =
+    createMutation.isPending ||
+    updateMutation.isPending ||
+    deleteMutation.isPending;
 
   const renderSkeletons = () => (
     <div className={styles.productGrid}>
@@ -169,12 +222,8 @@ const ShopPage: React.FC = () => {
     <div className={styles.headerActions}>
       <SearchAutocomplete
         value={searchTerm}
-        onChange={(val) => {
-          dispatch(setSearchTerm(val));
-        }}
-        onSearch={(val) => {
-          dispatch(setSearchTerm(val));
-        }}
+        onChange={(val) => setSearchTerm(val)}
+        onSearch={(val) => setSearchTerm(val)}
         onSelectProduct={(slug) => navigate(`/shop/${slug}`)}
         className={styles.searchInput}
       />
@@ -224,8 +273,8 @@ const ShopPage: React.FC = () => {
     >
       {fetchLoading ? (
         renderSkeletons()
-      ) : error ? (
-        <p className={styles.noResult}>{error}</p>
+      ) : fetchError ? (
+        <p className={styles.noResult}>{fetchError.message}</p>
       ) : paginatedProducts.length === 0 ? (
         <p className={styles.noResult}>
           {filteredProducts.length === 0
@@ -233,20 +282,18 @@ const ShopPage: React.FC = () => {
             : t("shop.noProducts")}
         </p>
       ) : (
-        <>
-          <div className={styles.productGrid}>
-            {paginatedProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                formatVND={formatVND}
-                onEdit={handleOpenModal}
-                onDelete={handleDeleteProduct}
-                isLoading={mutateLoading}
-              />
-            ))}
-          </div>
-        </>
+        <div className={styles.productGrid}>
+          {paginatedProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              formatVND={formatVND}
+              onEdit={handleOpenModal}
+              onDelete={handleDeleteProduct}
+              isLoading={mutateLoading}
+            />
+          ))}
+        </div>
       )}
 
       <ProductModal

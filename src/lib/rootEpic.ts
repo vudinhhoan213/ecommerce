@@ -6,17 +6,14 @@ import {
   fetchUserProfileEpic,
   loginUserEpic,
 } from "../features/auth";
-import {
-  fetchProductsEpic,
-  fetchProductByIdEpic,
-  createProductEpic,
-  searchProductsEpic,
-  updateProductEpic,
-  deleteProductEpic,
-  searchEpic,
-  searchSuggestEpic,
-} from "../features/shop";
 import { cartBatchEpic } from "../features/cart";
+
+// =============================================
+// ROOT EPIC
+//
+// Chỉ còn Auth + Cart epics.
+// Shop feature đã chuyển sang React Query hoàn toàn.
+// =============================================
 
 export const rootEpic: Epic<Action, Action, RootState> = combineEpics(
   // App init
@@ -24,16 +21,6 @@ export const rootEpic: Epic<Action, Action, RootState> = combineEpics(
   // Auth
   fetchUserProfileEpic,
   loginUserEpic,
-  // Search & Suggest
-  searchEpic,
-  searchSuggestEpic,
   // Cart
   cartBatchEpic,
-  // Product CRUD
-  fetchProductsEpic,
-  fetchProductByIdEpic,
-  createProductEpic,
-  searchProductsEpic,
-  updateProductEpic,
-  deleteProductEpic,
 );
