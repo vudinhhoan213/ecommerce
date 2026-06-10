@@ -2,12 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Input, Spin } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  selectSuggestResults,
-  selectSuggestLoading,
-} from "../store/searchSuggestSlice";
-import { searchSuggest, searchSuggestClear } from "../store/searchSuggestSlice";
+import { useSearchSuggest } from "../hooks";
 import { formatVND } from "../../../utils/format";
 import { slugify } from "../../../utils/slugify";
 import styles from "./SearchAutocomplete.module.css";
@@ -28,12 +23,23 @@ const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({
   className,
 }) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const results = useSelector(selectSuggestResults);
-  const loading = useSelector(selectSuggestLoading);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [debouncedKeyword, setDebouncedKeyword] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // ✅ React Query thay thế Redux searchSuggest
+  const { data: results = [], isLoading: loading } =
+    useSearchSuggest(debouncedKeyword);
+
+  // Debounce 300ms (thay thế debounceTime trong epic)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedKeyword(value);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [value]);
+
+  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -51,21 +57,18 @@ const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
     onChange(val);
-    dispatch(searchSuggest(val));
     setShowDropdown(true);
   };
 
   const handleSearch = (val: string) => {
     onSearch(val);
     setShowDropdown(false);
-    dispatch(searchSuggestClear());
   };
 
   const handleSelect = (title: string) => {
     onChange(title);
     onSearch(title);
     setShowDropdown(false);
-    dispatch(searchSuggestClear());
     onSelectProduct?.(slugify(title));
   };
 

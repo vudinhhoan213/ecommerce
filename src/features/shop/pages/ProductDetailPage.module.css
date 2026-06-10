@@ -1,14 +1,12 @@
-/* ===== Breadcrumb Title ===== */
-.breadcrumbTitle h2 {
-  font-size: 16px;
-  color: #555;
-  margin: 0 0 8px;
-  font-weight: 600;
-}
+/* ==============================================
+   PRODUCT DETAIL PAGE — Shopee-inspired
+   ============================================== */
 
+/* ===== Breadcrumb ===== */
 .breadcrumbLink {
   color: #00bee6;
   text-decoration: none;
+  font-size: 22px;
 }
 
 .breadcrumbLink:hover {
@@ -18,30 +16,32 @@
 /* ===== Product Layout ===== */
 .productSection {
   display: flex;
-  gap: 48px;
-  margin-top: 16px;
+  gap: 40px;
   align-items: flex-start;
 }
 
+/* ===== Image Gallery (Left column) ===== */
 .imageGallery {
-  flex: 0 0 340px;
+  flex: 0 0 400px;
+  max-width: 400px;
+  position: sticky;
+  top: 0;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  align-items: center;
+  gap: 12px;
 }
 
-/* ===== Image Slider ===== */
 .imageSlider {
+  width: 100%;
   position: relative;
-  width: 300px;
-  height: 260px;
+  aspect-ratio: 1 / 1;
+  max-height: 400px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f7f8fa;
-  border-radius: 12px;
-  border: 1px solid #eee;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 .mainImageWrapper {
@@ -50,39 +50,37 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  padding: 16px;
+  padding: 24px;
 }
 
 .mainImage {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
-  transition: transform 0.2s ease, opacity 0.3s ease;
+  transition: transform 0.3s ease;
 }
 
 .mainImage:hover {
-  transform: scale(1.03);
+  transform: scale(1.05);
 }
 
-/* ===== Arrow Buttons ===== */
+/* Arrow Buttons */
 .arrowBtn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   border: none;
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 12px;
-  color: #333;
+  font-size: 14px;
+  color: #fff;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
   z-index: 2;
 }
 
@@ -95,200 +93,181 @@
 }
 
 .arrowBtn:hover {
-  background-color: #00bee6;
-  color: #fff;
-  box-shadow: 0 3px 12px rgba(0, 190, 230, 0.35);
-  transform: translateY(-50%) scale(1.1);
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
-.arrowBtn:active {
-  transform: translateY(-50%) scale(0.95);
-}
-
-/* ===== Image counter ===== */
+/* Image counter */
 .imageCounter {
   position: absolute;
-  bottom: 8px;
-  right: 10px;
-  font-size: 11px;
-  color: #888;
-  background: rgba(255, 255, 255, 0.85);
-  padding: 2px 8px;
-  border-radius: 10px;
+  bottom: 10px;
+  right: 12px;
+  font-size: 12px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 3px 10px;
+  border-radius: 12px;
 }
 
-/* ===== Thumbnail preview ===== */
+/* Thumbnails — Shopee style row */
 .thumbnailList {
   display: flex;
-  gap: 8px;
-  justify-content: center;
-  flex-wrap: wrap;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 4px 0;
 }
 
 .thumbnailItem {
-  width: 52px;
-  height: 52px;
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
   object-fit: contain;
-  border-radius: 8px;
+  border-radius: 2px;
   border: 2px solid transparent;
   cursor: pointer;
-  transition: all 0.2s ease;
-  background-color: #f7f8fa;
-  padding: 4px;
+  transition: border-color 0.15s ease;
+  background-color: #f5f5f5;
+  padding: 3px;
 }
 
 .thumbnailItem:hover {
-  border-color: #a0dff0;
-  transform: translateY(-2px);
-  box-shadow: 0 3px 8px rgba(0, 190, 230, 0.15);
+  border-color: #ccc;
 }
 
 .thumbnailActive {
-  border-color: #00bee6 !important;
-  box-shadow: 0 0 0 2px rgba(0, 190, 230, 0.2);
-  transform: translateY(-2px);
+  border-color: #ee4d2d !important;
 }
 
-/* ===== Color selector ===== */
+/* Color Selector */
 .colorSection {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  align-items: center;
+  gap: 8px;
 }
 
 .colorLabel {
-  font-size: 12px;
-  color: #888;
-  font-weight: 500;
+  font-size: 14px;
+  color: #757575;
 }
 
 .colorList {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  justify-content: center;
 }
 
 .colorList button {
-  padding: 6px 14px;
-  border: 1.5px solid #ddd;
+  padding: 8px 20px;
+  border: 1px solid #e0e0e0;
   background-color: #fff;
-  border-radius: 20px;
+  border-radius: 2px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 13px;
-  color: #555;
+  transition: all 0.15s ease;
+  font-size: 14px;
+  color: #333;
+  position: relative;
 }
 
 .colorList button:hover {
   border-color: #00bee6;
   color: #00bee6;
-  background-color: #f8fdfe;
 }
 
 .colorOptionActive {
   border-color: #00bee6 !important;
   color: #00bee6 !important;
-  font-weight: 600;
-  background-color: #edf9fc !important;
-  box-shadow: 0 0 0 2px rgba(0, 190, 230, 0.12);
 }
 
-/* ===== Info section ===== */
+/* ===== Info Section (Right column) ===== */
 .infoSection {
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding-top: 4px;
+  gap: 16px;
 }
 
 .infoSection h2 {
-  font-size: 22px;
+  font-size: 20px;
   margin: 0;
-  color: #1a1a1a;
-  font-weight: 700;
+  color: #333;
+  font-weight: 500;
+  line-height: 1.5;
 }
 
 .infoSection p {
-  color: #666;
-  line-height: 1.6;
+  color: #757575;
+  line-height: 1.7;
   margin: 0;
   font-size: 14px;
 }
 
+/* Price — Shopee style orange bg */
 .price {
-  font-size: 24px;
-  font-weight: 700;
-  color: #e53935;
-  margin-top: 4px;
+  font-size: 30px;
+  font-weight: 500;
+  color: #ee4d2d;
+  background: #fef6f0;
+  padding: 16px 20px;
+  margin: 0 -20px;
+  padding-left: 20px;
 }
 
+/* Selected color display */
 .selectedColorText {
-  font-size: 13px;
-  color: #555;
-  padding: 8px 14px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
+  font-size: 14px;
+  color: #757575;
+  padding: 10px 16px;
+  background-color: #f5f5f5;
+  border-radius: 2px;
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
   width: fit-content;
-  border-left: 3px solid #00bee6;
 }
 
 .selectedColorText strong {
-  color: #00bee6;
+  color: #ee4d2d;
 }
 
-/* ===== Action buttons ===== */
+/* ===== Action Buttons ===== */
 .actions {
   display: flex;
-  gap: 12px;
-  margin-top: 16px;
+  gap: 16px;
+  margin-top: 20px;
 }
 
 .buyNowBtn,
 .addToCartBtn {
-  padding: 12px 24px;
+  padding: 14px 40px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   border: none;
-  border-radius: 8px;
+  border-radius: 2px;
   cursor: pointer;
   flex: 1;
-  transition: all 0.2s ease;
   text-align: center;
+  transition: opacity 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .buyNowBtn {
-  background-color: #00bee6;
+  background-color: #ee4d2d;
   color: #fff;
-  box-shadow: 0 2px 8px rgba(0, 190, 230, 0.25);
 }
 
 .buyNowBtn:hover {
-  background-color: #00a8cc;
-  box-shadow: 0 4px 14px rgba(0, 190, 230, 0.35);
-  transform: translateY(-1px);
-}
-
-.buyNowBtn:active {
-  transform: translateY(0);
+  opacity: 0.9;
 }
 
 .addToCartBtn {
   background-color: #fff;
-  color: #00bee6;
-  border: 1.5px solid #00bee6;
+  color: #ee4d2d;
+  border: 1px solid #ee4d2d;
 }
 
 .addToCartBtn:hover {
-  background-color: #f0fafd;
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(0, 190, 230, 0.15);
-}
-
-.addToCartBtn:active {
-  transform: translateY(0);
+  background-color: #fef6f0;
 }
 
 /* ===== Loading ===== */
@@ -301,53 +280,17 @@
   color: #999;
 }
 
-/* ===== RESPONSIVE ===== */
+/* ==============================================
+   RESPONSIVE — TABLET (≤ 992px)
+   ============================================== */
 
-/* --- Tablet (≤ 992px) --- */
 @media (max-width: 992px) {
   .productSection {
-    gap: 32px;
+    gap: 28px;
   }
 
   .imageGallery {
-    flex: 0 0 280px;
-  }
-
-  .imageSlider {
-    width: 260px;
-    height: 220px;
-  }
-
-  .infoSection h2 {
-    font-size: 20px;
-  }
-
-  .price {
-    font-size: 22px;
-  }
-}
-
-/* --- Mobile landscape / small tablet (≤ 768px) --- */
-@media (max-width: 768px) {
-  .productSection {
-    flex-direction: column;
-    gap: 24px;
-  }
-
-  .imageGallery {
-    flex: none;
-    width: 100%;
-  }
-
-  .imageSlider {
-    width: 100%;
-    max-width: 320px;
-    height: 240px;
-    margin: 0 auto;
-  }
-
-  .actions {
-    flex-direction: column;
+    flex: 0 0 360px;
   }
 
   .infoSection h2 {
@@ -355,38 +298,115 @@
   }
 
   .price {
-    font-size: 20px;
+    font-size: 26px;
+    padding: 12px 16px;
+    margin: 0;
   }
 }
 
-/* --- iPhone (≤ 576px) --- */
-@media (max-width: 576px) {
+/* ==============================================
+   RESPONSIVE — SMALL TABLET (≤ 768px)
+   ============================================== */
+
+@media (max-width: 768px) {
   .productSection {
-    gap: 16px;
-    margin-top: 8px;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .imageGallery {
+    flex: none;
+    width: 100%;
+    position: static;
   }
 
   .imageSlider {
-    max-width: 100%;
-    height: 200px;
-  }
-
-  .thumbnailItem {
-    width: 42px;
-    height: 42px;
+    border-radius: 0;
   }
 
   .thumbnailList {
-    gap: 6px;
+    padding: 8px 12px;
   }
 
-  .colorList button {
-    padding: 5px 10px;
-    font-size: 12px;
+  .colorSection {
+    padding: 0 12px;
+  }
+
+  .infoSection {
+    padding: 16px;
   }
 
   .infoSection h2 {
     font-size: 16px;
+  }
+
+  .price {
+    font-size: 24px;
+    margin: 0 -16px;
+    padding: 12px 16px;
+  }
+
+  /* Sticky bottom actions — like Shopee app */
+  .actions {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 10px 16px;
+    background: #fff;
+    border-top: 1px solid #e0e0e0;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+    z-index: 100;
+    gap: 10px;
+  }
+
+  .buyNowBtn,
+  .addToCartBtn {
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+}
+
+/* ==============================================
+   RESPONSIVE — MOBILE (≤ 576px)
+   ============================================== */
+
+@media (max-width: 576px) {
+  .imageSlider {
+    aspect-ratio: 1 / 1;
+  }
+
+  .mainImageWrapper {
+    padding: 16px;
+  }
+
+  .thumbnailItem {
+    width: 48px;
+    height: 48px;
+  }
+
+  .thumbnailList {
+    gap: 4px;
+    padding: 6px 10px;
+  }
+
+  .colorList button {
+    padding: 6px 14px;
+    font-size: 13px;
+  }
+
+  .colorSection {
+    padding: 0 10px;
+  }
+
+  .infoSection {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .infoSection h2 {
+    font-size: 15px;
   }
 
   .infoSection p {
@@ -394,21 +414,30 @@
   }
 
   .price {
-    font-size: 18px;
+    font-size: 20px;
+    padding: 10px 12px;
+    margin: 0 -12px;
   }
 
   .selectedColorText {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+
+  .arrowBtn {
+    width: 30px;
+    height: 30px;
     font-size: 12px;
-    padding: 6px 10px;
+  }
+
+  .actions {
+    padding: 8px 12px;
+    gap: 8px;
   }
 
   .buyNowBtn,
   .addToCartBtn {
-    padding: 10px 16px;
-    font-size: 13px;
-  }
-
-  .actions {
-    gap: 8px;
+    padding: 11px 12px;
+    font-size: 12px;
   }
 }

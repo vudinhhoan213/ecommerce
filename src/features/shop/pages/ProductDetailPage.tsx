@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { slugify } from "../../../utils/slugify";
-import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
 import { Spin } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import RatingStars from "../../../components/ui/RatingStars";
@@ -10,14 +10,10 @@ import CartIcon from "../../cart/components/CartIcon";
 import PageContainer from "../../../components/ui/PageContainer";
 import { useRequireAuth } from "../../auth/hooks/useRequireAuth";
 import { addToCart } from "../../cart/store/cartSlice";
-import {
-  selectCurrentProduct,
-  selectFetchLoading,
-  selectProductError,
-  fetchProductById,
-  clearCurrentProduct,
-} from "../store";
+import { useProductById } from "../hooks";
+import { productApi } from "../api";
 import type { AppDispatch } from "../../../lib/store";
+import type { Product } from "../../../types";
 import styles from "./ProductDetailPage.module.css";
 import { formatVND } from "../../../utils/format";
 
@@ -35,9 +31,45 @@ const ProductDetailPage: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const requireAuth = useRequireAuth();
 
-  const product = useSelector(selectCurrentProduct);
-  const loading = useSelector(selectFetchLoading);
-  const error = useSelector(selectProductError);
+  // =============================================
+  // Tìm product ID từ slug, rồi dùng React Query fetch detail
+  // =============================================
+
+  const [productId, setProductId] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!slug) return;
+
+    const findProductId = async () => {
+      try {
+        const searchTerm = slug.replace(/-/g, " ");
+        const results = await productApi.search(searchTerm);
+        const matched = results.find(
+          (p: Product) => slugify(p.title) === slug,
+        );
+        if (matched) {
+          setProductId(matched.id);
+        }
+      } catch {
+        // Error handled by useProductById
+      }
+    };
+
+    findProductId();
+  }, [slug]);
+
+  // ✅ React Query fetch product detail
+  const {
+    data: product,
+    isLoading: loading,
+    error: fetchError,
+  } = useProductById(productId);
+
+  const error = fetchError?.message || "";
+
+  // =============================================
+  // LOCAL STATE
+  // =============================================
 
   const [selectedColorIndex, setSelectedColorIndex] = useState(0);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -50,35 +82,6 @@ const ProductDetailPage: React.FC = () => {
     ],
     [t],
   );
-
-  useEffect(() => {
-    if (!slug) return;
-
-    const findAndFetch = async () => {
-      try {
-        const baseUrl = process.env.REACT_APP_API_BASE_URL || "";
-        const searchTerm = slug.replace(/-/g, " ");
-        const response = await fetch(
-          `${baseUrl}/products/search?q=${encodeURIComponent(searchTerm)}&limit=10`,
-        );
-        const data = await response.json();
-        const matched = data.products?.find(
-          (p: { title: string }) => slugify(p.title) === slug,
-        );
-        if (matched) {
-          dispatch(fetchProductById(matched.id));
-        }
-      } catch {
-        // error handled by epic
-      }
-    };
-
-    findAndFetch();
-
-    return () => {
-      dispatch(clearCurrentProduct());
-    };
-  }, [slug, dispatch]);
 
   const colors = useMemo(
     () => product?.colors ?? defaultColors,
@@ -104,6 +107,10 @@ const ProductDetailPage: React.FC = () => {
     }
     return result;
   }, [product, colors]);
+
+  // =============================================
+  // HANDLERS
+  // =============================================
 
   const handleColorSelect = useCallback(
     (index: number) => {
@@ -138,6 +145,10 @@ const ProductDetailPage: React.FC = () => {
       }
     });
   };
+
+  // =============================================
+  // RENDER
+  // =============================================
 
   return (
     <PageContainer
