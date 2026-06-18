@@ -1,19 +1,10 @@
 :root {
-<<<<<<< ours
   --accent: #10c7e8;
   --header: #c9ecfb;
   --border: #c7c7c7;
   --ink: #0a0a0a;
   --muted: #555;
   --surface: #fff;
-=======
-  --accent: #2563eb;
-  --header: #ffffff;
-  --border: #e5e7eb;
-  --ink: #111827;
-  --muted: #6b7280;
-  --surface: #ffffff;
->>>>>>> theirs
 }
 
 * {
@@ -72,12 +63,8 @@
   transform: rotate(-90deg);
 }
 
-.cube {
-  position: absolute;
-  width: 34px;
-  height: 34px;
-  background: #075b91;
-  box-shadow: inset -5px -5px 0 rgba(0, 0, 0, 0.12);
+.title1 {
+  background: #075b91; MbText 
 }
 
 .cube-one {

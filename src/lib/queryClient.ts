@@ -3,7 +3,7 @@ import { QueryClient } from "@tanstack/react-query";
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // Data "tươi" trong 5 phút → không refetch nếu chưa hết hạn
+      // Data "fresh" trong 5 phút → không refetch nếu chưa hết hạn
       staleTime: 5 * 60 * 1000,
       // Cache giữ 10 phút sau khi không còn component subscribe
       gcTime: 10 * 60 * 1000,

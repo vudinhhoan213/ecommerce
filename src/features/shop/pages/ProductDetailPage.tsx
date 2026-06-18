@@ -7,6 +7,7 @@ import { Spin } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import RatingStars from "../../../components/ui/RatingStars";
 import CartIcon from "../../cart/components/CartIcon";
+import { TextMb } from "../../../components/ui/TextMb";
 import PageContainer from "../../../components/ui/PageContainer";
 import { useRequireAuth } from "../../auth/hooks/useRequireAuth";
 import { addToCart } from "../../cart/store/cartSlice";
@@ -243,9 +244,13 @@ const ProductDetailPage: React.FC = () => {
           </div>
 
           <div className={styles.infoSection}>
-            <h2>{product.title}</h2>
-            <p>{product.description}</p>
-            <div className={styles.price}>{formatVND(product.price)}</div>
+            <TextMb variant="heading">{product.title}</TextMb>
+            <TextMb variant="body" style={{ marginTop: 8 }}>
+              {product.description}
+            </TextMb>
+            <TextMb variant="price" className={styles.price} style={{ marginTop: 12 }}>
+              {formatVND(product.price)}
+            </TextMb>
             <RatingStars rating={product.rating} />
             <div className={styles.selectedColorText}>
               {t("productDetail.selectedColor")}:{" "}

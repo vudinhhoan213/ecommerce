@@ -14,6 +14,7 @@ import FilterPopover, {
   DEFAULT_FILTER,
   type FilterState,
 } from "../components/FilterPopover";
+import { TextMb } from "../../../components/ui/TextMb";
 import PageContainer from "../../../components/ui/PageContainer";
 import Pagination from "../../../components/ui/Pagination";
 import {
@@ -79,7 +80,10 @@ const ShopPage: React.FC = () => {
   // DERIVED STATE
   // =============================================
 
-  const products = debouncedSearch ? searchResults ?? [] : allProducts;
+  const products = useMemo(
+    () => (debouncedSearch ? searchResults ?? [] : allProducts),
+    [debouncedSearch, searchResults, allProducts],
+  );
 
   const isFilterActive =
     filter.priceFrom !== DEFAULT_FILTER.priceFrom ||
@@ -274,13 +278,13 @@ const ShopPage: React.FC = () => {
       {fetchLoading ? (
         renderSkeletons()
       ) : fetchError ? (
-        <p className={styles.noResult}>{fetchError.message}</p>
+        <TextMb variant="error" className={styles.noResult}>{fetchError.message}</TextMb>
       ) : paginatedProducts.length === 0 ? (
-        <p className={styles.noResult}>
+        <TextMb variant="body" className={styles.noResult}>
           {filteredProducts.length === 0
             ? t("shop.noSearchResult", { term: searchTerm })
             : t("shop.noProducts")}
-        </p>
+        </TextMb>
       ) : (
         <div className={styles.productGrid}>
           {paginatedProducts.map((product) => (

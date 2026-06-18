@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { logout } from "../features/auth";
 import { Logo, Cart, Human } from "../assets";
 import styles from "./MainLayout.module.css";
+import { TextMb } from "../components/ui/TextMb";
 import type { RootState } from "../lib/store";
 
 interface MainLayoutProps {
@@ -86,7 +87,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           <Link to="/shop">
             <img src={Logo} alt="Logo" />
           </Link>
-          <h1>{t("layout.appName")}</h1>
+          <TextMb variant="title" as="h1">
+            {t("layout.appName")}
+          </TextMb>
         </div>
 
         <div className={styles.headerRight}>
@@ -148,7 +151,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ""}`}
         >
           <div className={styles.sidebarHeader}>
-            {!isCollapsed && <span>{t("layout.menu")}</span>}
+            {!isCollapsed && <span className={styles.menuText}>{t("layout.menu")}</span>}
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
               className={styles.hamburgerBtn}
@@ -176,7 +179,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     alt={item.label}
                     className={styles.menuIcon}
                   />
-                  {!isCollapsed && <span>{item.label}</span>}
+                  {!isCollapsed && <span className={styles.menuText}>{item.label}</span>}
                 </NavLink>
               </li>
             ))}

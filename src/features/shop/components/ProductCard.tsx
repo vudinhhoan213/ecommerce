@@ -5,6 +5,7 @@ import { slugify } from "../../../utils/slugify";
 import { useTranslation } from "react-i18next";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import RatingStars from "../../../components/ui/RatingStars";
+import { TextMb } from "../../../components/ui/TextMb";
 import { addToCart } from "../../cart/store/cartSlice";
 import { useRequireAuth } from "../../auth/hooks/useRequireAuth";
 import styles from "../pages/ShopPage.module.css";
@@ -47,8 +48,12 @@ const ProductCard: React.FC<ProductCardProps> = ({
           alt={product.title}
         />
         <div className={styles.productInfo}>
-          <h3>{product.title}</h3>
-          <div className={styles.price}>{formatVND(product.price)}</div>
+          <TextMb variant="title" as="h3" maxLines={2}>
+            {product.title}
+          </TextMb>
+          <TextMb variant="price" className={styles.price}>
+            {formatVND(product.price)}
+          </TextMb>
           <RatingStars rating={product.rating} />
         </div>
       </Link>

@@ -3,6 +3,7 @@ import { Input, Spin } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { useSearchSuggest } from "../hooks";
+import { TextMb } from "../../../components/ui/TextMb";
 import { formatVND } from "../../../utils/format";
 import { slugify } from "../../../utils/slugify";
 import styles from "./SearchAutocomplete.module.css";
@@ -107,8 +108,12 @@ const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({
                 className={styles.thumbnail}
               />
               <div className={styles.info}>
-                <span className={styles.title}>{product.title}</span>
-                <span className={styles.price}>{formatVND(product.price)}</span>
+                <TextMb variant="title" as="span" className={styles.title} truncate>
+                  {product.title}
+                </TextMb>
+                <TextMb variant="price" as="span" className={styles.price}>
+                  {formatVND(product.price)}
+                </TextMb>
               </div>
             </div>
           ))}

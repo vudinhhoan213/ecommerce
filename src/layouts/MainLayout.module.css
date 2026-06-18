@@ -252,8 +252,8 @@
     width: 60px;
   }
 
-  .sidebar .sidebarHeader span,
-  .sidebar .menuLink span {
+  .sidebar .sidebarHeader .menuText,
+  .sidebar .menuLink .menuText {
     display: none;
   }
 
@@ -338,11 +338,11 @@
     margin: 2px 8px;
   }
 
-  .sidebar .menuLink span {
+  .sidebar .menuLink .menuText {
     display: inline;
   }
 
-  .sidebar .sidebarHeader span {
+  .sidebar .sidebarHeader .menuText {
     display: inline;
   }
 

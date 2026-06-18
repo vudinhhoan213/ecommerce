@@ -9,14 +9,6 @@ import { productApi } from "../api/productApi";
 
 // =============================================
 // QUERY KEYS — Factory Pattern
-//
-// Mô hình phân cấp:
-//   ['products']                        ← all (invalidate tất cả)
-//   ['products', 'list']                ← lists
-//   ['products', 'list', { search }]    ← filtered list
-//   ['products', 'detail']              ← all details
-//   ['products', 'detail', id]          ← specific detail
-//
 // =============================================
 
 export const productKeys = {

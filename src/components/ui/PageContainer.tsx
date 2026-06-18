@@ -1,4 +1,5 @@
 import React from "react";
+import { TextMb } from "./TextMb";
 import styles from "./PageContainer.module.css";
 
 interface PageContainerProps {
@@ -23,8 +24,16 @@ const PageContainer: React.FC<PageContainerProps> = ({
       {showHeader && (
         <div className={styles.pageHeader}>
           <div className={styles.headerLeft}>
-            {title && <h2 className={styles.title}>{title}</h2>}
-            {subtitle && <span className={styles.subtitle}>{subtitle}</span>}
+            {title && (
+              <TextMb variant="heading" className={styles.title}>
+                {title}
+              </TextMb>
+            )}
+            {subtitle && (
+              <TextMb variant="subtitle" className={styles.subtitle}>
+                {subtitle}
+              </TextMb>
+            )}
           </div>
           {headerRight && (
             <div className={styles.headerRight}>{headerRight}</div>
