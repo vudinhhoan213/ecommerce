@@ -81,7 +81,7 @@ const ShopPage: React.FC = () => {
   // =============================================
 
   const products = useMemo(
-    () => (debouncedSearch ? searchResults ?? [] : allProducts),
+    () => (debouncedSearch ? (searchResults ?? []) : allProducts),
     [debouncedSearch, searchResults, allProducts],
   );
 
@@ -278,7 +278,9 @@ const ShopPage: React.FC = () => {
       {fetchLoading ? (
         renderSkeletons()
       ) : fetchError ? (
-        <TextMb variant="error" className={styles.noResult}>{fetchError.message}</TextMb>
+        <TextMb variant="error" className={styles.noResult}>
+          {fetchError.message}
+        </TextMb>
       ) : paginatedProducts.length === 0 ? (
         <TextMb variant="body" className={styles.noResult}>
           {filteredProducts.length === 0
